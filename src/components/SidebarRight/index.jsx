@@ -1,6 +1,6 @@
 import { Search } from "@mui/icons-material";
-import { Input, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import Input from "@mui/material/Input";
+import Box from "@mui/material/Box";
 
 function SidebarRight() {
   return (

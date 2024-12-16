@@ -16,8 +16,8 @@ const Item = styled(Paper)(({ theme }) => ({
   }),
 }));
 
-const SidebarLayout = styled(Grid)(({ theme }) => ({
-  [theme.breakpoints.down("lg")]: {
+const SidebarLayoutRight = styled(Grid)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
     display: "none",
   },
 }));
@@ -47,11 +47,11 @@ function LayoutDefault({ children }) {
         <HomeLayout item lg={6}>
           <Item>{children}</Item>
         </HomeLayout>
-        <SidebarLayout item lg={3.5}>
+        <SidebarLayoutRight item md={3.5}>
           <Item>
             <SidebarRight />
           </Item>
-        </SidebarLayout>
+        </SidebarLayoutRight>
       </Grid>
     </Box>
   );
