@@ -8,14 +8,14 @@ const theme = createTheme({
     light: {
       palette: {
         primary: {
-          main: "#E87EA1", // Màu chính cho light mode
+          main: "#8DB883", // Màu chính cho light mode
         },
         secondary: {
           main: "#ff4081", // Màu phụ cho light mode
         },
         background: {
-          default: "#F7E1D7", // Màu nền cho light mode
-          paper: "#f5f5f5",
+          default: "#EDEDED", // Màu nền cho light mode
+          paper: "black",
         },
         text: {
           primary: "#41463D",

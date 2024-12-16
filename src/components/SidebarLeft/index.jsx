@@ -1,7 +1,6 @@
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
 import Button from "@mui/material/Button";
@@ -12,15 +11,26 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import XIcon from "@mui/icons-material/X";
+import { styled } from "@mui/material/styles";
 
+// Import React Route Dom
 import { NavLink } from "react-router-dom";
+
+const Navbar = styled(List)(({ theme }) => ({
+  [theme.breakpoints.down("lg")]: {
+    alignItems: "center",
+  },
+}));
 
 function SidebarLeft() {
   return (
     <>
-      <Box sx={{ height: "100vh", maxWidth: "100%" }}>
-        {/* <Box textAlign="center">
-          <Link
+      <Box
+        sx={{ height: "100vh", maxWidth: "100%", p: 2, textAlign: "center" }}
+      >
+        <Box>
+          <NavLink
             to="/"
             style={{
               textDecoration: "none",
@@ -28,10 +38,15 @@ function SidebarLeft() {
               backgroundColor: "inherit",
             }}
           >
-            <DiamondIcon sx={{ width: 50, height: 50 }} />
-          </Link>
-        </Box> */}
-        <List>
+            <XIcon sx={{ width: 40, height: 40 }} />
+          </NavLink>
+        </Box>
+        <Navbar
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <NavLink
             to="/"
             style={{
@@ -46,13 +61,14 @@ function SidebarLeft() {
                 margin: ".5rem 0",
               }}
             >
-              <ListItemIcon>
+              <Box>
                 <HomeIcon fontSize="medium" color="action" />
-              </ListItemIcon>
+              </Box>
               <Hidden lgDown>
                 <ListItemText
                   primaryTypographyProps={{
                     fontSize: "18px",
+                    ml: 2,
                   }}
                   primary="Home"
                 />
@@ -73,13 +89,14 @@ function SidebarLeft() {
                 margin: ".5rem 0",
               }}
             >
-              <ListItemIcon>
+              <Box>
                 <BookmarkIcon fontSize="medium" color="action" />
-              </ListItemIcon>
+              </Box>
               <Hidden lgDown>
                 <ListItemText
                   primaryTypographyProps={{
                     fontSize: "18px",
+                    ml: 2,
                   }}
                   primary="Bookmarks"
                 />
@@ -100,13 +117,14 @@ function SidebarLeft() {
                 margin: ".5rem 0",
               }}
             >
-              <ListItemIcon>
+              <Box>
                 <FavoriteIcon fontSize="medium" color="action" />
-              </ListItemIcon>
+              </Box>
               <Hidden lgDown>
                 <ListItemText
                   primaryTypographyProps={{
                     fontSize: "18px",
+                    ml: 2,
                   }}
                   primary="Likes"
                 />
@@ -127,39 +145,50 @@ function SidebarLeft() {
                 margin: ".5rem 0",
               }}
             >
-              <ListItemIcon>
+              <Box>
                 <PersonOutlineIcon fontSize="medium" color="action" />
-              </ListItemIcon>
+              </Box>
               <Hidden lgDown>
                 <ListItemText
                   primaryTypographyProps={{
                     fontSize: "18px",
+                    ml: 2,
                   }}
                   primary="Profile"
                 />
               </Hidden>
             </ListItem>
           </NavLink>
-          <ListItem
-            id="basic-button"
-            sx={{
-              borderRadius: "28px",
-              margin: ".5rem 0",
+          <NavLink
+            to="profile"
+            style={{
+              textDecoration: "none",
+              color: "inherit",
+              backgroundColor: "inherit",
             }}
           >
-            <ListItemIcon>
-              <LogoutIcon fontSize="medium" color="action" />
-            </ListItemIcon>
-            <Hidden lgDown>
-              <ListItemText
-                primaryTypographyProps={{
-                  fontSize: "18px",
-                }}
-                primary="Logout"
-              />
-            </Hidden>
-          </ListItem>
-        </List>
+            <ListItem
+              id="basic-button"
+              sx={{
+                borderRadius: "28px",
+                margin: ".5rem 0",
+              }}
+            >
+              <Box>
+                <LogoutIcon fontSize="medium" color="action" />
+              </Box>
+              <Hidden lgDown>
+                <ListItemText
+                  primaryTypographyProps={{
+                    fontSize: "18px",
+                    ml: 2,
+                  }}
+                  primary="Logout"
+                />
+              </Hidden>
+            </ListItem>
+          </NavLink>
+        </Navbar>
         <Hidden lgDown>
           <Button
             variant="contained"
@@ -180,12 +209,11 @@ function SidebarLeft() {
             color="primary"
             style={{
               borderRadius: "28px",
-              padding: "0 15px",
               textTransform: "capitalize",
               textAlign: "center",
             }}
           >
-            <AddCircleOutlineIcon />
+            <AddCircleOutlineIcon sx={{ width: "1.5em", height: "1.5em" }} />
           </IconButton>
         </Hidden>
       </Box>

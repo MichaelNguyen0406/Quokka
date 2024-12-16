@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 
 function SidebarRight() {
   return (
-    <Box sx={{ height: "100%" }}>
+    <Box sx={{ height: "100vh", p: 2 }}>
       <Box paddingTop="10px">
         <Box
           width="100%"
@@ -33,7 +33,7 @@ function SidebarRight() {
             }
           />
         </Box>
-        <Box
+        {/* <Box
           sx={{
             background: "#eee",
             borderRadius: "28px",
@@ -45,7 +45,7 @@ function SidebarRight() {
             Who to follow
           </Typography>
           <Box textAlign="center" marginTop="1rem"></Box>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );

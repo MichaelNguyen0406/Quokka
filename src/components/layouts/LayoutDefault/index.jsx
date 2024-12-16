@@ -22,23 +22,29 @@ const SidebarLayout = styled(Grid)(({ theme }) => ({
   },
 }));
 
+const SidebarLayoutLeft = styled(Grid)(({ theme }) => ({
+  [theme.breakpoints.down("lg")]: {
+    width: "90px",
+  },
+}));
+
 const HomeLayout = styled(Grid)(({ theme }) => ({
   [theme.breakpoints.down("lg")]: {
-    width: "100%",
+    flex: 1,
   },
 }));
 
 // eslint-disable-next-line react/prop-types
 function LayoutDefault({ children }) {
   return (
-    <Box maxWidth="1400px" sx={{ m: "0 auto" }}>
+    <Box maxWidth="1300px" sx={{ m: "0 auto", bgcolor: "background.default" }}>
       <Grid container>
-        <SidebarLayout item lg={2.5}>
+        <SidebarLayoutLeft item lg={2.5}>
           <Item>
             <SidebarLeft />
           </Item>
-        </SidebarLayout>
-        <HomeLayout item md={12} lg={6}>
+        </SidebarLayoutLeft>
+        <HomeLayout item lg={6}>
           <Item>{children}</Item>
         </HomeLayout>
         <SidebarLayout item lg={3.5}>
