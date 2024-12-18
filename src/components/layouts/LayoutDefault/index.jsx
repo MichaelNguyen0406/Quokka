@@ -24,7 +24,7 @@ const SidebarLayoutRight = styled(Grid)(({ theme }) => ({
 
 const SidebarLayoutLeft = styled(Grid)(({ theme }) => ({
   [theme.breakpoints.down("lg")]: {
-    width: "90px",
+    width: "80px",
   },
 }));
 

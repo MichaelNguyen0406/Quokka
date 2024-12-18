@@ -15,7 +15,7 @@ const theme = createTheme({
         },
         background: {
           default: "#EDEDED", // Màu nền cho light mode
-          paper: "black",
+          paper: "#fff",
         },
         text: {
           primary: "#41463D",

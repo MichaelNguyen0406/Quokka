@@ -5,10 +5,11 @@ import Box from "@mui/material/Box";
 import AssistantIcon from "@mui/icons-material/Assistant";
 
 import AddPost from "../../components/AddPost";
+import Post from "../../components/Post";
 
 export default function Home() {
   return (
-    <Box height="100vh">
+    <Box height="auto">
       <Box borderBottom="1px solid #ccc" padding="8px 20px">
         <Grid container justifyContent="space-between" alignItems="center">
           <Grid item>
@@ -25,7 +26,9 @@ export default function Home() {
       </Box>
       <Box sx={{ overflowY: "scroll" }}>
         <AddPost />
-        <Box textAlign="center" marginTop="1rem"></Box>
+        <Box textAlign="center" marginTop="1rem">
+          <Post />
+        </Box>
       </Box>
     </Box>
   );
