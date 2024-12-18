@@ -1,7 +1,5 @@
 import SidebarLeft from "../../SidebarLeft";
 import SidebarRight from "../../SidebarRight";
-
-import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -16,19 +14,21 @@ const Item = styled(Paper)(({ theme }) => ({
   }),
 }));
 
-const SidebarLayoutRight = styled(Grid)(({ theme }) => ({
+const SidebarLayoutRight = styled(Box)(({ theme }) => ({
+  width: "320px",
   [theme.breakpoints.down("md")]: {
     display: "none",
   },
 }));
 
-const SidebarLayoutLeft = styled(Grid)(({ theme }) => ({
+const SidebarLayoutLeft = styled(Box)(({ theme }) => ({
+  width: "280px",
   [theme.breakpoints.down("lg")]: {
-    width: "80px",
+    width: "70px",
   },
 }));
 
-const HomeLayout = styled(Grid)(({ theme }) => ({
+const HomeLayout = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down("lg")]: {
     flex: 1,
   },
@@ -37,22 +37,30 @@ const HomeLayout = styled(Grid)(({ theme }) => ({
 // eslint-disable-next-line react/prop-types
 function LayoutDefault({ children }) {
   return (
-    <Box maxWidth="1300px" sx={{ m: "0 auto", bgcolor: "background.default" }}>
-      <Grid container>
-        <SidebarLayoutLeft item lg={2.5}>
-          <Item>
-            <SidebarLeft />
-          </Item>
-        </SidebarLayoutLeft>
-        <HomeLayout item lg={6}>
-          <Item>{children}</Item>
-        </HomeLayout>
-        <SidebarLayoutRight item md={3.5}>
-          <Item>
-            <SidebarRight />
-          </Item>
-        </SidebarLayoutRight>
-      </Grid>
+    <Box
+      maxWidth="1300px"
+      sx={{
+        m: "0 auto",
+        bgcolor: "background.default",
+        display: "flex",
+        position: "relative",
+      }}
+    >
+      <SidebarLayoutLeft position="fixed">
+        <Item>
+          <SidebarLeft />
+        </Item>
+      </SidebarLayoutLeft>
+      <SidebarLayoutLeft />
+      <HomeLayout flex={1}>
+        <Item>{children}</Item>
+      </HomeLayout>
+      {/* <SidebarLayoutRight /> */}
+      <SidebarLayoutRight>
+        <Item>
+          <SidebarRight />
+        </Item>
+      </SidebarLayoutRight>
     </Box>
   );
 }

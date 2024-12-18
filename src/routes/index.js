@@ -1,5 +1,6 @@
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
+import DetailPost from "../pages/DetailPost";
 
 export const publicRoutes = [
   {
@@ -9,5 +10,9 @@ export const publicRoutes = [
   {
     path: "/profile",
     component: Profile,
+  },
+  {
+    path: "/detail-post",
+    component: DetailPost,
   },
 ];

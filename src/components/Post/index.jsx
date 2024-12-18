@@ -24,6 +24,14 @@ const itemData = [
     img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
     title: "Breakfast",
   },
+  {
+    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
+    title: "Breakfast",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
+    title: "Breakfast",
+  },
 ];
 
 export default function Post() {
@@ -90,20 +98,36 @@ export default function Post() {
               </ImageListItem>
             ))}
             {itemData.slice(3, 4).map((item, index) => (
-              <ImageListItem key={index}>
+              <ImageListItem
+                key={index}
+                sx={{
+                  position: "relative",
+                }}
+              >
                 <img
                   srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
                   src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
                   alt={item.title}
                   loading="lazy"
                 />
+                {itemData.length > 4 && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      bottom: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, 50%)",
+                      display: "flex",
+                      alignItems: "center",
+                      color: "white",
+                    }}
+                  >
+                    <AddIcon sx={{ fontSize: 40 }} />{" "}
+                    <Typography fontSize={40}>{itemData.length - 4}</Typography>
+                  </Box>
+                )}
               </ImageListItem>
             ))}
-            {itemData.length > 4 && (
-              <Box>
-                <AddIcon />
-              </Box>
-            )}
           </ImageList>
         </Box>
         <Box
