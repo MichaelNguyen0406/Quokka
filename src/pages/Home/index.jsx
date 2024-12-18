@@ -6,6 +6,7 @@ import AssistantIcon from "@mui/icons-material/Assistant";
 
 import AddPost from "../../components/AddPost";
 import Post from "../../components/Post";
+import { posts } from "../../apis/posts";
 
 export default function Home() {
   return (
@@ -26,8 +27,10 @@ export default function Home() {
       </Box>
       <Box sx={{ overflowY: "scroll" }}>
         <AddPost />
-        <Box textAlign="center" marginTop="1rem">
-          <Post />
+        <Box textAlign="center">
+          {posts.map((post, index) => (
+            <Post key={index} post={post} />
+          ))}
         </Box>
       </Box>
     </Box>

@@ -13,7 +13,7 @@ const ButtonPost = styled(Button)(({ theme }) => ({
 
 export default function AddPost() {
   return (
-    <Box padding="1rem 1rem 0 1rem" borderBottom="1px solid #ccc">
+    <Box padding="1rem 1rem 0 1rem">
       <Grid container>
         <Grid item sx={{ paddingRight: "1rem" }}>
           <AccountCircleIcon sx={{ fontSize: 45 }} />
