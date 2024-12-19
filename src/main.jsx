@@ -5,12 +5,15 @@ import App from "./App.jsx";
 
 import { ThemeProvider } from "@mui/material";
 import theme from "./contexts/ThemeModeContext/index.js";
+import AuthProvider from "./contexts/authContext/index.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
   </StrictMode>

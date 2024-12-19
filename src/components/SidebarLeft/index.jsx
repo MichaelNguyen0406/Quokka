@@ -11,11 +11,22 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import XIcon from "@mui/icons-material/X";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import { styled } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
+
+// Import React Hooks
+import { useState } from "react";
 
 // Import React Route Dom
 import { NavLink } from "react-router-dom";
+
+// Import Auth
+import { doSignOut } from "../../firebase/auth.js";
 
 const Navbar = styled(List)(({ theme }) => ({
   [theme.breakpoints.down("lg")]: {
@@ -24,198 +35,285 @@ const Navbar = styled(List)(({ theme }) => ({
 }));
 
 function SidebarLeft() {
+  // Sign Out
+  const handleSignOut = () => {
+    doSignOut();
+  };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <Box
-        sx={{ height: "100vh", maxWidth: "100%", p: 2, textAlign: "center" }}
+        sx={{
+          height: "100vh",
+          maxWidth: "100%",
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
       >
         <Box>
-          <NavLink
-            to="/"
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-              backgroundColor: "inherit",
+          <Box>
+            <NavLink
+              to="/"
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                backgroundColor: "inherit",
+              }}
+            >
+              <XIcon sx={{ width: 40, height: 40 }} />
+            </NavLink>
+          </Box>
+          <Navbar
+            sx={{
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            <XIcon sx={{ width: 40, height: 40 }} />
-          </NavLink>
+            <NavLink
+              to="/"
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                backgroundColor: "inherit",
+              }}
+            >
+              <ListItem
+                sx={{
+                  borderRadius: "28px",
+                  margin: ".5rem 0",
+                }}
+              >
+                <Box>
+                  <HomeIcon fontSize="medium" color="action" />
+                </Box>
+                <Hidden lgDown>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      fontSize: "18px",
+                      ml: 2,
+                    }}
+                    primary="Home"
+                  />
+                </Hidden>
+              </ListItem>
+            </NavLink>
+            <NavLink
+              to="/bookmark"
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                backgroundColor: "inherit",
+              }}
+            >
+              <ListItem
+                sx={{
+                  borderRadius: "28px",
+                  margin: ".5rem 0",
+                }}
+              >
+                <Box>
+                  <BookmarkIcon fontSize="medium" color="action" />
+                </Box>
+                <Hidden lgDown>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      fontSize: "18px",
+                      ml: 2,
+                    }}
+                    primary="Bookmarks"
+                  />
+                </Hidden>
+              </ListItem>
+            </NavLink>
+            <NavLink
+              to="/like"
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                backgroundColor: "inherit",
+              }}
+            >
+              <ListItem
+                sx={{
+                  borderRadius: "28px",
+                  margin: ".5rem 0",
+                }}
+              >
+                <Box>
+                  <FavoriteIcon fontSize="medium" color="action" />
+                </Box>
+                <Hidden lgDown>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      fontSize: "18px",
+                      ml: 2,
+                    }}
+                    primary="Likes"
+                  />
+                </Hidden>
+              </ListItem>
+            </NavLink>
+            <NavLink
+              to="profile"
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                backgroundColor: "inherit",
+              }}
+            >
+              <ListItem
+                sx={{
+                  borderRadius: "28px",
+                  margin: ".5rem 0",
+                }}
+              >
+                <Box>
+                  <PersonOutlineIcon fontSize="medium" color="action" />
+                </Box>
+                <Hidden lgDown>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      fontSize: "18px",
+                      ml: 2,
+                    }}
+                    primary="Profile"
+                  />
+                </Hidden>
+              </ListItem>
+            </NavLink>
+            <NavLink
+              to="profile"
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                backgroundColor: "inherit",
+              }}
+            >
+              <ListItem
+                id="basic-button"
+                sx={{
+                  borderRadius: "28px",
+                  margin: ".5rem 0",
+                }}
+              >
+                <Box>
+                  <LogoutIcon fontSize="medium" color="action" />
+                </Box>
+                <Hidden lgDown>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      fontSize: "18px",
+                      ml: 2,
+                    }}
+                    primary="Logout"
+                  />
+                </Hidden>
+              </ListItem>
+            </NavLink>
+          </Navbar>
+          <Box>
+            <Hidden lgDown>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                style={{
+                  borderRadius: "28px",
+                  padding: "10px",
+                  textTransform: "capitalize",
+                }}
+              >
+                Post
+              </Button>
+            </Hidden>
+            <Hidden lgUp>
+              <IconButton
+                variant="contained"
+                color="primary"
+                style={{
+                  borderRadius: "28px",
+                  p: 0,
+                }}
+              >
+                <AddCircleOutlineIcon
+                  sx={{ width: "1.5em", height: "1.5em" }}
+                />
+              </IconButton>
+            </Hidden>
+          </Box>
         </Box>
-        <Navbar
+        <Box
+          onClick={handleClick}
           sx={{
+            mb: "40px",
+            p: ".5rem .3rem",
             display: "flex",
-            flexDirection: "column",
+            alignItems: "center",
+            borderRadius: "28px",
+            "&:hover": {
+              bgcolor: "#eee",
+              cursor: "pointer",
+            },
           }}
         >
-          <NavLink
-            to="/"
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-              backgroundColor: "inherit",
-            }}
-          >
-            <ListItem
-              sx={{
-                borderRadius: "28px",
-                margin: ".5rem 0",
-              }}
+          <AccountCircleIcon sx={{ fontSize: 40 }} />
+          <Hidden lgDown>
+            <Box
+              mx=".5rem"
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              flex={1}
             >
-              <Box>
-                <HomeIcon fontSize="medium" color="action" />
-              </Box>
-              <Hidden lgDown>
-                <ListItemText
-                  primaryTypographyProps={{
-                    fontSize: "18px",
-                    ml: 2,
+              <Box textAlign="start">
+                <Typography
+                  sx={{
+                    fontSize: "16px",
+                    color: "#444",
+                    fontWeight: "bold",
                   }}
-                  primary="Home"
-                />
-              </Hidden>
-            </ListItem>
-          </NavLink>
-          <NavLink
-            to="/bookmark"
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-              backgroundColor: "inherit",
-            }}
-          >
-            <ListItem
-              sx={{
-                borderRadius: "28px",
-                margin: ".5rem 0",
-              }}
-            >
-              <Box>
-                <BookmarkIcon fontSize="medium" color="action" />
+                >
+                  Nguyễn Trường An
+                </Typography>
+                <Typography sx={{ fontSize: "15px" }}>@michael</Typography>
               </Box>
-              <Hidden lgDown>
-                <ListItemText
-                  primaryTypographyProps={{
-                    fontSize: "18px",
-                    ml: 2,
-                  }}
-                  primary="Bookmarks"
-                />
-              </Hidden>
-            </ListItem>
-          </NavLink>
-          <NavLink
-            to="/like"
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-              backgroundColor: "inherit",
-            }}
-          >
-            <ListItem
-              sx={{
-                borderRadius: "28px",
-                margin: ".5rem 0",
-              }}
-            >
-              <Box>
-                <FavoriteIcon fontSize="medium" color="action" />
-              </Box>
-              <Hidden lgDown>
-                <ListItemText
-                  primaryTypographyProps={{
-                    fontSize: "18px",
-                    ml: 2,
-                  }}
-                  primary="Likes"
-                />
-              </Hidden>
-            </ListItem>
-          </NavLink>
-          <NavLink
-            to="profile"
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-              backgroundColor: "inherit",
-            }}
-          >
-            <ListItem
-              sx={{
-                borderRadius: "28px",
-                margin: ".5rem 0",
-              }}
-            >
-              <Box>
-                <PersonOutlineIcon fontSize="medium" color="action" />
-              </Box>
-              <Hidden lgDown>
-                <ListItemText
-                  primaryTypographyProps={{
-                    fontSize: "18px",
-                    ml: 2,
-                  }}
-                  primary="Profile"
-                />
-              </Hidden>
-            </ListItem>
-          </NavLink>
-          <NavLink
-            to="profile"
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-              backgroundColor: "inherit",
-            }}
-          >
-            <ListItem
-              id="basic-button"
-              sx={{
-                borderRadius: "28px",
-                margin: ".5rem 0",
-              }}
-            >
-              <Box>
-                <LogoutIcon fontSize="medium" color="action" />
-              </Box>
-              <Hidden lgDown>
-                <ListItemText
-                  primaryTypographyProps={{
-                    fontSize: "18px",
-                    ml: 2,
-                  }}
-                  primary="Logout"
-                />
-              </Hidden>
-            </ListItem>
-          </NavLink>
-        </Navbar>
-        <Hidden lgDown>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            style={{
-              borderRadius: "28px",
-              padding: "10px",
-              textTransform: "capitalize",
-            }}
-          >
-            Post
-          </Button>
-        </Hidden>
-        <Hidden lgUp>
-          <IconButton
-            variant="contained"
-            color="primary"
-            style={{
-              borderRadius: "28px",
-              textTransform: "capitalize",
-              textAlign: "center",
-            }}
-          >
-            <AddCircleOutlineIcon sx={{ width: "1.5em", height: "1.5em" }} />
-          </IconButton>
-        </Hidden>
+              <MoreHorizIcon />
+            </Box>
+          </Hidden>
+        </Box>
+        <Menu
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          transformOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+          autoFocus={false}
+          sx={{
+            "& .MuiPaper-root": {
+              width: "300px", // Đặt chiều rộng
+              maxHeight: "400px", // Đặt chiều cao tối đa
+            },
+          }}
+        >
+          <MenuItem onClick={handleSignOut}>Logout</MenuItem>
+        </Menu>
       </Box>
     </>
   );

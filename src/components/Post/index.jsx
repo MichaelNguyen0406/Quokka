@@ -11,10 +11,20 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import AddIcon from "@mui/icons-material/Add";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
 
 export default function Post({ post }) {
+  const [favorite, setFavorite] = useState(false);
+
+  const handleFavorite = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFavorite(!favorite);
+  };
+
   return (
     <NavLink
       to="/detail-post"
@@ -129,8 +139,12 @@ export default function Post({ post }) {
             <IconButton size="small">
               <SyncIcon fontSize="small" />
             </IconButton>
-            <IconButton size="small">
-              <FavoriteBorderIcon fontSize="small" />
+            <IconButton size="small" onClick={handleFavorite}>
+              {favorite ? (
+                <FavoriteIcon fontSize="small" />
+              ) : (
+                <FavoriteBorderIcon fontSize="small" />
+              )}
             </IconButton>
             <IconButton size="small">
               <IosShareIcon fontSize="small" />

@@ -12,6 +12,7 @@ import { auth } from "../../firebase/config";
 
 const AuthContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   return useContext(AuthContext);
 };
@@ -25,7 +26,7 @@ function AuthProvider({ children }) {
   const Navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(AuthContext, InitializeUser);
+    const unsubscribe = onAuthStateChanged(auth, InitializeUser);
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);
@@ -37,7 +38,8 @@ function AuthProvider({ children }) {
       Navigate("/");
     } else {
       setCurrentUser(null);
-      userLoggedIn(false);
+      setUserLoggedIn(false);
+      Navigate("/login");
     }
     setLoading(false);
   };
@@ -48,7 +50,11 @@ function AuthProvider({ children }) {
     loading,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
 }
 
 export default AuthProvider;
