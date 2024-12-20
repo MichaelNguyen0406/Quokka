@@ -28,6 +28,8 @@ import { NavLink } from "react-router-dom";
 // Import Auth
 import { doSignOut } from "../../firebase/auth.js";
 
+import PostModals from "../Modals/PostModals/index.jsx";
+
 const Navbar = styled(List)(({ theme }) => ({
   [theme.breakpoints.down("lg")]: {
     alignItems: "center",
@@ -35,6 +37,17 @@ const Navbar = styled(List)(({ theme }) => ({
 }));
 
 function SidebarLeft() {
+  const [openModal, setOpenModal] = useState(false);
+
+  // Open Modal
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   // Sign Out
   const handleSignOut = () => {
     doSignOut();
@@ -51,6 +64,7 @@ function SidebarLeft() {
 
   return (
     <>
+      <PostModals open={openModal} onClose={handleCloseModal} />
       <Box
         sx={{
           height: "100vh",
@@ -222,7 +236,7 @@ function SidebarLeft() {
               </ListItem>
             </NavLink>
           </Navbar>
-          <Box>
+          <Box onClick={handleOpenModal}>
             <Hidden lgDown>
               <Button
                 variant="contained"
