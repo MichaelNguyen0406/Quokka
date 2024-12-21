@@ -48,7 +48,7 @@ function PostModals({ open, onClose }) {
   };
 
   // Image
-  const [images, setImages] = useState([]);
+  //   const [images, setImages] = useState([]);
 
   return (
     <Modal
