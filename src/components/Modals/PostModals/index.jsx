@@ -8,12 +8,16 @@ import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
 
 // Import Emoji Picker
 import EmojiPicker from "emoji-picker-react";
 
 // Import React
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const style = {
   borderRadius: "20px",
@@ -26,6 +30,18 @@ const style = {
   boxShadow: 24,
   p: "1rem",
 };
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 // eslint-disable-next-line react/prop-types
 function PostModals({ open, onClose }) {
@@ -48,7 +64,30 @@ function PostModals({ open, onClose }) {
   };
 
   // Image
-  //   const [images, setImages] = useState([]);
+  const images = useRef([]);
+  const [uploadImage, setUploadImage] = useState([]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files;
+
+    if (file) {
+      images.current = [...images, ...file];
+      images.current.map((image) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setUploadImage([...uploadImage, reader.result]);
+        };
+        reader.readAsDataURL(image);
+      });
+    }
+  };
+
+  const handleRemoveImage = (index) => {
+    uploadImage.splice(index, 1);
+    setUploadImage([...uploadImage]);
+  };
+
+  console.log(uploadImage);
 
   return (
     <Modal
@@ -63,48 +102,92 @@ function PostModals({ open, onClose }) {
             <CloseIcon />
           </IconButton>
         </Box>
-        <Box
-          display="flex"
-          alignItems="center"
-          gap="1rem"
-          borderBottom="1px solid #eee"
-          pb="4rem"
-        >
+        <Box display="flex" gap="1rem" borderBottom="1px solid #eee">
           <Box>
             <AccountCircleIcon sx={{ fontSize: 45 }} />
           </Box>
           <Box>
-            <Input
-              sx={{ fontSize: "1.5rem" }}
-              autoFocus={true}
-              fullWidth
-              disableUnderline
-              placeholder="What is happening?"
-              value={valueInput}
-              onChange={handleChangeInput}
-            />
+            <Box>
+              <Input
+                sx={{ fontSize: "1.5rem" }}
+                autoFocus={true}
+                fullWidth
+                disableUnderline
+                placeholder="What is happening?"
+                value={valueInput}
+                onChange={handleChangeInput}
+              />
+            </Box>
+            <Box sx={{ borderRadius: "10px", overflow: "hidden", mb: "1rem" }}>
+              <ImageList cols={1}>
+                {uploadImage &&
+                  uploadImage.map((image, index) => (
+                    <ImageListItem
+                      key={index}
+                      sx={{
+                        position: "relative",
+                      }}
+                    >
+                      <img src={image} />
+                      <IconButton
+                        onClick={() => handleRemoveImage(index)}
+                        sx={{
+                          position: "absolute",
+                          right: "0",
+                          color: "white",
+                        }}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    </ImageListItem>
+                  ))}
+              </ImageList>
+            </Box>
           </Box>
         </Box>
-        <Box pt="1rem" display="flex" alignItems="center">
-          <IconButton>
-            <InsertPhotoIcon />
-          </IconButton>
-          <Box>
-            <IconButton onClick={handleClick}>
-              <EmojiEmotionsIcon />
-            </IconButton>
-            <Menu
-              transformOrigin={{ vertical: "bottom", horizontal: "center" }}
-              anchorOrigin={{ vertical: "top", horizontal: "center" }}
-              anchorEl={anchorEl}
-              open={openEmoji}
-              onClose={handleClose}
+        <Box
+          pt="1rem"
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Box display="flex">
+            <Button
+              component="label"
+              role={undefined}
+              tabIndex={-1}
+              sx={{
+                minWidth: "20px",
+                color: "inherit",
+              }}
             >
-              <MenuItem>
-                <EmojiPicker onEmojiClick={getEmoji} />
-              </MenuItem>
-            </Menu>
+              <InsertPhotoIcon />
+              <VisuallyHiddenInput
+                type="file"
+                multiple
+                onChange={handleImageChange}
+              />
+            </Button>
+            <Box>
+              <IconButton onClick={handleClick}>
+                <EmojiEmotionsIcon />
+              </IconButton>
+              <Menu
+                transformOrigin={{ vertical: "bottom", horizontal: "center" }}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                anchorEl={anchorEl}
+                open={openEmoji}
+                onClose={handleClose}
+              >
+                <MenuItem>
+                  <EmojiPicker onEmojiClick={getEmoji} />
+                </MenuItem>
+              </Menu>
+            </Box>
           </Box>
+          <Button variant="contained" color="primary">
+            Post
+          </Button>
         </Box>
       </Box>
     </Modal>
