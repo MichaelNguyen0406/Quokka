@@ -17,7 +17,7 @@ import ImageListItem from "@mui/material/ImageListItem";
 import EmojiPicker from "emoji-picker-react";
 
 // Import React
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 const style = {
   borderRadius: "20px",
@@ -64,30 +64,32 @@ function PostModals({ open, onClose }) {
   };
 
   // Image
-  const images = useRef([]);
-  const [uploadImage, setUploadImage] = useState([]);
+  const [images, setImages] = useState([]);
 
   const handleImageChange = (e) => {
     const file = e.target.files;
 
     if (file) {
-      images.current = [...images, ...file];
-      images.current.map((image) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setUploadImage([...uploadImage, reader.result]);
-        };
-        reader.readAsDataURL(image);
-      });
+      setImages([...images, ...file]);
     }
   };
 
   const handleRemoveImage = (index) => {
-    uploadImage.splice(index, 1);
-    setUploadImage([...uploadImage]);
+    images.splice(index, 1);
+    setImages([...images]);
   };
 
-  console.log(uploadImage);
+  const convertFile = (file) => {
+    const imgUrl = URL.createObjectURL(file);
+    return imgUrl;
+  };
+
+  // Post handle
+  // const handlePost = () => {
+  //   if (images.length) {
+
+  //   }
+  // }
 
   return (
     <Modal
@@ -119,28 +121,27 @@ function PostModals({ open, onClose }) {
               />
             </Box>
             <Box sx={{ borderRadius: "10px", overflow: "hidden", mb: "1rem" }}>
-              <ImageList cols={1}>
-                {uploadImage &&
-                  uploadImage.map((image, index) => (
-                    <ImageListItem
-                      key={index}
+              <ImageList cols={images.length > 1 ? 2 : 1}>
+                {images.map((file, index) => (
+                  <ImageListItem
+                    key={index}
+                    sx={{
+                      position: "relative",
+                    }}
+                  >
+                    <img src={convertFile(file)} />
+                    <IconButton
+                      onClick={() => handleRemoveImage(index)}
                       sx={{
-                        position: "relative",
+                        position: "absolute",
+                        right: "0",
+                        color: "white",
                       }}
                     >
-                      <img src={image} />
-                      <IconButton
-                        onClick={() => handleRemoveImage(index)}
-                        sx={{
-                          position: "absolute",
-                          right: "0",
-                          color: "white",
-                        }}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                    </ImageListItem>
-                  ))}
+                      <CloseIcon />
+                    </IconButton>
+                  </ImageListItem>
+                ))}
               </ImageList>
             </Box>
           </Box>
