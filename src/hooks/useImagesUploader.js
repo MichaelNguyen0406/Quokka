@@ -28,6 +28,7 @@ const useImageUploader = (cloudName, uploadPreset) => {
       const responses = await Promise.all(uploadPromises);
       const urls = responses.map((res) => res.data.secure_url);
       setUploadedUrls(urls);
+      // console.log(urls);
 
       return urls; // Trả về danh sách URL đã upload
     } catch (error) {

@@ -3,14 +3,11 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
-import Button from "@mui/material/Button";
 import Hidden from "@mui/material/Hidden";
-import IconButton from "@mui/material/IconButton";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import XIcon from "@mui/icons-material/X";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -37,17 +34,6 @@ const Navbar = styled(List)(({ theme }) => ({
 }));
 
 function SidebarLeft() {
-  const [openModal, setOpenModal] = useState(false);
-
-  // Open Modal
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
   // Sign Out
   const handleSignOut = () => {
     doSignOut();
@@ -64,7 +50,6 @@ function SidebarLeft() {
 
   return (
     <>
-      <PostModals open={openModal} onClose={handleCloseModal} />
       <Box
         sx={{
           height: "100vh",
@@ -236,36 +221,7 @@ function SidebarLeft() {
               </ListItem>
             </NavLink>
           </Navbar>
-          <Box onClick={handleOpenModal}>
-            <Hidden lgDown>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                style={{
-                  borderRadius: "28px",
-                  padding: "10px",
-                  textTransform: "capitalize",
-                }}
-              >
-                Post
-              </Button>
-            </Hidden>
-            <Hidden lgUp>
-              <IconButton
-                variant="contained"
-                color="primary"
-                style={{
-                  borderRadius: "28px",
-                  p: 0,
-                }}
-              >
-                <AddCircleOutlineIcon
-                  sx={{ width: "1.5em", height: "1.5em" }}
-                />
-              </IconButton>
-            </Hidden>
-          </Box>
+          <PostModals />
         </Box>
         <Box
           onClick={handleClick}

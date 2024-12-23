@@ -6,7 +6,6 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import SyncIcon from "@mui/icons-material/Sync";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import IosShareIcon from "@mui/icons-material/IosShare";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
@@ -15,8 +14,9 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import ActionButton from "./components/ActionButton";
 
-export default function Post({ post }) {
+function Post({ post }) {
   const [favorite, setFavorite] = useState(false);
 
   const handleFavorite = (e) => {
@@ -53,18 +53,16 @@ export default function Post({ post }) {
           >
             <Box sx={{ display: "flex", flexWrap: "wrap", overflow: "hidden" }}>
               <Typography sx={{ fontSize: "15px", mr: "6px", fontWeight: 600 }}>
-                {post.name}
+                Nguyen Truong An
               </Typography>
               <Typography sx={{ fontSize: "15px", mr: "6px", color: "#555" }}>
-                {post.user_id}
+                @michael
               </Typography>
               <Typography sx={{ fontSize: "15px", mr: "6px", color: "#555" }}>
-                {post.create_time}
+                . now
               </Typography>
             </Box>
-            <IconButton>
-              <MoreHorizIcon />
-            </IconButton>
+            <ActionButton name="post" id={post.id} />
           </Box>
           <Box>
             <Typography
@@ -78,10 +76,10 @@ export default function Post({ post }) {
               {post.caption}
             </Typography>
           </Box>
-          {post.img.length > 0 && (
+          {post.imageURL.length > 0 && (
             <Box sx={{ borderRadius: "10px", overflow: "hidden" }}>
-              <ImageList>
-                {post.img.slice(0, 3).map((item, index) => (
+              <ImageList cols={post.imageURL.length > 1 ? 2 : 1}>
+                {post.imageURL.slice(0, 3).map((item, index) => (
                   <ImageListItem key={index}>
                     <img
                       srcSet={`${item}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
@@ -90,7 +88,7 @@ export default function Post({ post }) {
                     />
                   </ImageListItem>
                 ))}
-                {post.img.slice(3, 4).map((item, index) => (
+                {post.imageURL.slice(3, 4).map((item, index) => (
                   <ImageListItem
                     key={index}
                     sx={{
@@ -98,12 +96,11 @@ export default function Post({ post }) {
                     }}
                   >
                     <img
-                      srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                      src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                      alt={item.title}
+                      srcSet={`${item}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                      src={`${item}?w=164&h=164&fit=crop&auto=format`}
                       loading="lazy"
                     />
-                    {post.img.length > 4 && (
+                    {post.imageURL.length > 4 && (
                       <Box
                         sx={{
                           position: "absolute",
@@ -117,7 +114,7 @@ export default function Post({ post }) {
                       >
                         <AddIcon sx={{ fontSize: 40 }} />{" "}
                         <Typography fontSize={40}>
-                          {post.img.length - 4}
+                          {post.imageURL.length - 4}
                         </Typography>
                       </Box>
                     )}
@@ -155,3 +152,5 @@ export default function Post({ post }) {
     </NavLink>
   );
 }
+
+export default Post;

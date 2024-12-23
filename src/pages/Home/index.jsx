@@ -6,11 +6,14 @@ import AssistantIcon from "@mui/icons-material/Assistant";
 
 import AddPost from "../../components/AddPost";
 import Post from "../../components/Post";
-import { posts } from "../../apis/posts";
+
+import useFireStore from "../../hooks/useFireStore";
 
 export default function Home() {
+  const posts = useFireStore("post");
+
   return (
-    <Box height="auto">
+    <Box minHeight="100vh">
       <Box borderBottom="1px solid #ccc" padding="8px 20px">
         <Grid container justifyContent="space-between" alignItems="center">
           <Grid item>

@@ -55,8 +55,8 @@ function LayoutDefault({ children }) {
       <HomeLayout flex={1}>
         <Item>{children}</Item>
       </HomeLayout>
-      {/* <SidebarLayoutRight /> */}
-      <SidebarLayoutRight>
+      <SidebarLayoutRight />
+      <SidebarLayoutRight position="fixed" right={0}>
         <Item>
           <SidebarRight />
         </Item>
