@@ -3,7 +3,9 @@ import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Avatar from "@mui/material/Avatar";
+
+import { useAuth } from "../../contexts/authContext";
 
 const ButtonPost = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
@@ -12,11 +14,13 @@ const ButtonPost = styled(Button)(({ theme }) => ({
 }));
 
 export default function AddPost() {
+  const { userDetail } = useAuth();
+
   return (
     <Box padding="1rem 1rem 0 1rem">
       <Grid container>
         <Grid item sx={{ paddingRight: "1rem" }}>
-          <AccountCircleIcon sx={{ fontSize: 45 }} />
+          <Avatar src={userDetail?.photoURL} />
         </Grid>
         <Grid item flexGrow="1">
           <Box padding=".5rem 0">

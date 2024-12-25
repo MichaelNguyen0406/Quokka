@@ -23,6 +23,7 @@ const SidebarLayoutRight = styled(Box)(({ theme }) => ({
 
 const SidebarLayoutLeft = styled(Box)(({ theme }) => ({
   width: "280px",
+
   [theme.breakpoints.down("lg")]: {
     width: "70px",
   },
@@ -55,8 +56,8 @@ function LayoutDefault({ children }) {
       <HomeLayout flex={1}>
         <Item>{children}</Item>
       </HomeLayout>
-      <SidebarLayoutRight />
-      <SidebarLayoutRight position="fixed" right={0}>
+      {/* <SidebarLayoutRight /> */}
+      <SidebarLayoutRight>
         <Item>
           <SidebarRight />
         </Item>

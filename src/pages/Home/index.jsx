@@ -10,7 +10,7 @@ import Post from "../../components/Post";
 import useFireStore from "../../hooks/useFireStore";
 
 export default function Home() {
-  const posts = useFireStore("post");
+  const posts = useFireStore("posts");
 
   return (
     <Box minHeight="100vh">

@@ -13,24 +13,50 @@ import InputEmail from "../components/InputEmail.jsx";
 import InputPassword from "../components/InputPassword.jsx";
 import InputSubmit from "../components/InputSubmit.jsx";
 import InputCheckBox from "../components/InputCheckBox.jsx";
+import InputDisplayName from "../components/InputDisplayName.jsx";
 
 // Auth
 import { doCreateUserWithEmailAndPassword } from "../../../firebase/auth.js";
+import { useState } from "react";
+import { updateProfile } from "firebase/auth";
+import { addDocumentId } from "../../../firebase/service.js";
 
 function SignUp() {
-  // Auth
-
+  const [loading, setLoading] = useState(false);
   // Validation form
-  const onSubmit = () => {
+  const onSubmit = async () => {
+    setLoading(true);
     try {
-      doCreateUserWithEmailAndPassword(values.email, values.password);
+      const userCredential = await doCreateUserWithEmailAndPassword(
+        values.email,
+        values.password
+      );
+      const user = userCredential.user;
+      await updateProfile(user, {
+        displayName: values.displayName,
+      });
+
+      const dataUser = {
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        listPost: [],
+        listComment: [],
+        listLike: [],
+        listBookmark: [],
+        listFriend: [],
+      };
+      await addDocumentId("users", dataUser, user.uid);
     } catch (error) {
       console.log(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const { handleChange, handleSubmit, values, errors, touched } = useFormik({
     initialValues: {
+      displayName: "",
       email: "",
       password: "",
       passwordConfirm: "",
@@ -41,19 +67,25 @@ function SignUp() {
   });
 
   return (
-    <Card sx={{ width: 400, textAlign: "center", padding: 6 }}>
+    <Card sx={{ width: 300, textAlign: "center", padding: 4 }}>
       <Typography variant="h3" sx={{ mb: 1 }}>
         Sign up
       </Typography>
-      <Typography sx={{ mb: 3 }}>
+      <Typography>
         Already have an account? <Link to="/login">Sign in here</Link>
       </Typography>
       <Box component="form" onSubmit={handleSubmit}>
+        <InputDisplayName
+          handleChange={handleChange}
+          values={values.displayName}
+          touched={touched.displayName}
+          error={errors.displayName}
+        />
         <InputEmail
           handleChange={handleChange}
           values={values.email}
           touched={touched.email}
-          errors={errors.email}
+          error={errors.email}
         />
         <InputPassword
           handleChange={handleChange}
@@ -83,7 +115,7 @@ function SignUp() {
           />
           <Link to="/forgot-password">Forgot password?</Link>
         </Box>
-        <InputSubmit>Sign me up</InputSubmit>
+        <InputSubmit loading={loading}>Sign me up</InputSubmit>
       </Box>
       <Typography>©2024.All rights reserved</Typography>
     </Card>

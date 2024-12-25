@@ -10,31 +10,28 @@ import { useState } from "react";
 import { deleteDocumentById } from "../../../firebase/service";
 import { Typography } from "@mui/material";
 
+import { useAuth } from "../../../contexts/authContext";
+
 // eslint-disable-next-line react/prop-types
 function ActionButton({ name, id }) {
-  const [loadingDelete, setLoadingDelete] = useState(false);
+  // Auth
+  const { userDetail } = useAuth();
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setAnchorEl(e.currentTarget);
+    if (userDetail?.listPost?.includes(id)) {
+      setAnchorEl(e.currentTarget);
+    }
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
   const handleDelete = () => {
-    setLoadingDelete(true);
     setAnchorEl(false);
     deleteDocumentById(name, id);
-    // try {
-    //   await deleteDocumentById(name, id);
-    // } catch (error) {
-    //   console.log("Erros: ", error);
-    // } finally {
-    //   setLoadingDelete(false);
-
-    // }
   };
 
   return (
@@ -79,7 +76,6 @@ function ActionButton({ name, id }) {
         </MenuItem>
         <MenuItem
           onClick={handleDelete}
-          onClose
           sx={{ display: "flex", alignItems: "center", gap: 1 }}
         >
           <EditIcon />

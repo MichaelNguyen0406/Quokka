@@ -26,7 +26,7 @@ function InputPassword({
 
   return (
     <TextField
-      sx={{ mb: 2.5 }}
+      sx={{ mt: 2.5 }}
       fullWidth
       name={name}
       type={showPassword ? "text" : "password"}

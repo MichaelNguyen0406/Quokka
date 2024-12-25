@@ -1,6 +1,7 @@
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 
 // Import Firebase Config
@@ -15,5 +16,9 @@ export const doCreateUserWithEmailAndPassword = async (email, password) => {
 };
 
 export const doSignOut = async () => {
-  return auth.signOut();
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.log("Errors: ", error);
+  }
 };

@@ -1,10 +1,11 @@
-import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 // eslint-disable-next-line react/prop-types
-function InputSubmit({ children }) {
+function InputSubmit({ children, loading }) {
   return (
-    <Button
+    <LoadingButton
       fullWidth
+      loading={loading}
       type="submit"
       variant="contained"
       sx={{
@@ -15,7 +16,7 @@ function InputSubmit({ children }) {
       }}
     >
       {children}
-    </Button>
+    </LoadingButton>
   );
 }
 

@@ -16,11 +16,34 @@ import InputCheckBox from "../components/InputCheckBox.jsx";
 
 // Auth
 import { doSignInWithEmailAndPassword } from "../../../firebase/auth.js";
+import { useState } from "react";
 
 function SignIn() {
+  const [loading, setLoading] = useState(false);
+
   // Authentication
-  const onSubmit = (data) => {
-    doSignInWithEmailAndPassword(data.email, data.password);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    try {
+      await doSignInWithEmailAndPassword(data.email, data.password);
+    } catch (error) {
+      switch (error.code) {
+        case "auth/user-not-found":
+          console.log(error.message);
+          errors.email = "User does not exist";
+          values.password = "";
+          break;
+        case "auth/wrong-password":
+          console.log(error.message);
+          errors.password = "Password is incorrect";
+          values.password = "";
+          break;
+        default:
+          console.error("Lỗi không xác định:", error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
   // console.log(auth.currentUser);
 
@@ -38,11 +61,11 @@ function SignIn() {
   // Submit
 
   return (
-    <Card sx={{ width: 400, textAlign: "center", padding: 6 }}>
+    <Card sx={{ width: 300, textAlign: "center", padding: 4 }}>
       <Typography variant="h3" sx={{ mb: 1 }}>
         Sign in
       </Typography>
-      <Typography sx={{ mb: 3 }}>
+      <Typography>
         Don&apos;t have an account?{" "}
         <NavLink style={{ textDecoration: "none" }} to="/sign-up">
           Click here to sign up
@@ -66,7 +89,7 @@ function SignIn() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            my: 1,
+            my: 0,
           }}
         >
           <InputCheckBox
@@ -78,7 +101,7 @@ function SignIn() {
             Forgot password?
           </NavLink>
         </Box>
-        <InputSubmit>Login</InputSubmit>
+        <InputSubmit loading={loading}>Login</InputSubmit>
       </Box>
       <Typography>©2024.All rights reserved</Typography>
     </Card>

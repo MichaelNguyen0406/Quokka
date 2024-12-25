@@ -9,6 +9,7 @@ import { onAuthStateChanged } from "firebase/auth";
 
 // Import Firebase Config
 import { auth } from "../../firebase/config";
+import { getDocumentById } from "../../firebase/service";
 
 const AuthContext = createContext();
 
@@ -21,6 +22,7 @@ export const useAuth = () => {
 function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [userDetail, setUserDetail] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const Navigate = useNavigate();
@@ -31,9 +33,14 @@ function AuthProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);
 
-  const InitializeUser = (user) => {
+  const InitializeUser = async (user) => {
     if (user) {
-      setCurrentUser({ ...user });
+      setCurrentUser(user);
+      console.log(user.uid);
+
+      const ud = await getDocumentById("users", user.uid);
+
+      setUserDetail({ ...ud, id: user.uid });
       setUserLoggedIn(true);
       Navigate("/");
     } else {
@@ -46,6 +53,7 @@ function AuthProvider({ children }) {
 
   const value = {
     currentUser,
+    userDetail,
     userLoggedIn,
     loading,
   };

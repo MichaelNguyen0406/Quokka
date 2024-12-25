@@ -1,31 +1,47 @@
 /* eslint-disable react/prop-types */
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import SyncIcon from "@mui/icons-material/Sync";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import IosShareIcon from "@mui/icons-material/IosShare";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import AddIcon from "@mui/icons-material/Add";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import Avatar from "@mui/material/Avatar";
+import Skeleton from "@mui/material/Skeleton";
 
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
 import ActionButton from "./components/ActionButton";
 
+import postTime from "../../helper/postTime";
+import PostInteraction from "./components/PostInteraction";
+
+import { getDocumentById } from "../../firebase/service";
+import { useEffect, useState } from "react";
+
 function Post({ post }) {
-  const [favorite, setFavorite] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const userRef = await getDocumentById("users", post.user_id);
+        setUser(userRef);
+      } catch (error) {
+        console.log("Error: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post.user_id]);
 
-  const handleFavorite = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setFavorite(!favorite);
-  };
-
-  return (
+  return loading ? (
+    <Box sx={{ width: "100%" }}>
+      <Skeleton />
+      <Skeleton animation="wave" />
+      <Skeleton animation={false} />
+    </Box>
+  ) : (
     <NavLink
       to="/detail-post"
       style={{ textDecoration: "none", color: "inherit" }}
@@ -41,7 +57,7 @@ function Post({ post }) {
         }}
       >
         <Box sx={{ pr: 1 }}>
-          <AccountCircleIcon sx={{ fontSize: 45 }} />
+          <Avatar src={user?.photoURL} />
         </Box>
         <Box flexGrow="1">
           <Box
@@ -53,13 +69,10 @@ function Post({ post }) {
           >
             <Box sx={{ display: "flex", flexWrap: "wrap", overflow: "hidden" }}>
               <Typography sx={{ fontSize: "15px", mr: "6px", fontWeight: 600 }}>
-                Nguyen Truong An
+                {user?.displayName}
               </Typography>
               <Typography sx={{ fontSize: "15px", mr: "6px", color: "#555" }}>
-                @michael
-              </Typography>
-              <Typography sx={{ fontSize: "15px", mr: "6px", color: "#555" }}>
-                . now
+                {postTime(post.createdAt.toDate())}
               </Typography>
             </Box>
             <ActionButton name="post" id={post.id} />
@@ -123,30 +136,12 @@ function Post({ post }) {
               </ImageList>
             </Box>
           )}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-around",
-              mt: ".8rem",
-            }}
-          >
-            <IconButton size="small">
-              <ChatBubbleOutlineIcon fontSize="small" />
-            </IconButton>
-            <IconButton size="small">
-              <SyncIcon fontSize="small" />
-            </IconButton>
-            <IconButton size="small" onClick={handleFavorite}>
-              {favorite ? (
-                <FavoriteIcon fontSize="small" />
-              ) : (
-                <FavoriteBorderIcon fontSize="small" />
-              )}
-            </IconButton>
-            <IconButton size="small">
-              <IosShareIcon fontSize="small" />
-            </IconButton>
-          </Box>
+          <PostInteraction
+            commentCount={post.commentCount}
+            likeCount={post.likeCount}
+            shareCount={post.shareCount}
+            postId={post.id}
+          />
         </Box>
       </Box>
     </NavLink>

@@ -3,7 +3,6 @@ import Modal from "@mui/material/Modal";
 import Input from "@mui/material/Input";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import Hidden from "@mui/material/Hidden";
@@ -15,6 +14,7 @@ import { addDocument } from "../../../firebase/service";
 
 // Import Auth
 import { useAuth } from "../../../contexts/authContext";
+import { updateCollectionFieldById } from "../../../firebase/service";
 
 // Import ImageUpload
 import useImageUploader from "../../../hooks/useImagesUploader";
@@ -22,6 +22,8 @@ import useImageUploader from "../../../hooks/useImagesUploader";
 import EmojiButton from "../../EmojiButton";
 import ImageButton from "../../ImageButton";
 import ImagePreview from "../../ImagePreview";
+import Avatar from "@mui/material/Avatar";
+import { arrayUnion } from "firebase/firestore";
 
 const style = {
   borderRadius: "20px",
@@ -47,7 +49,7 @@ function PostModals() {
   };
 
   // Auth
-  const { currentUser } = useAuth();
+  const { userDetail } = useAuth();
 
   // Input
   const [valueInput, setValueInput] = useState("");
@@ -84,11 +86,21 @@ function PostModals() {
       const urls = await uploadImages(images);
       if (urls.length) {
         const dataPost = {
-          user_id: currentUser.uid,
+          user_id: userDetail.id,
           caption: valueInput,
           imageURL: [...urls],
+          listComment: [],
+          commentCount: 0,
+          likeCount: 0,
+          shareCount: 0,
         };
-        addDocument("post", dataPost);
+        const post = await addDocument("posts", dataPost);
+        await updateCollectionFieldById(
+          "users",
+          userDetail.id,
+          "listPost",
+          arrayUnion(post.id)
+        );
       }
     } catch (error) {
       console.error("Error uploading images:", error);
@@ -144,7 +156,7 @@ function PostModals() {
           </Box>
           <Box display="flex" gap="1rem" borderBottom="1px solid #eee">
             <Box>
-              <AccountCircleIcon sx={{ fontSize: 45 }} />
+              <Avatar src={userDetail?.photoURL} />
             </Box>
             <Box flex={1}>
               <Box>
