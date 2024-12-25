@@ -10,10 +10,16 @@ import Post from "../../components/Post";
 import useFireStore from "../../hooks/useFireStore";
 
 export default function Home() {
-  const posts = useFireStore("posts");
+  const option = {
+    orderBy: {
+      field: "createdAt",
+      value: "desc",
+    },
+  };
+  const posts = useFireStore("posts", option);
 
   return (
-    <Box minHeight="100vh">
+    <Box height="100vh">
       <Box borderBottom="1px solid #ccc" padding="8px 20px">
         <Grid container justifyContent="space-between" alignItems="center">
           <Grid item>
@@ -28,7 +34,7 @@ export default function Home() {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ overflowY: "scroll" }}>
+      <Box sx={{ height: "90vh", overflowY: "scroll" }}>
         <AddPost />
         <Box textAlign="center">
           {posts.map((post, index) => (

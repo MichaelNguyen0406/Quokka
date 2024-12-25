@@ -15,6 +15,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const SidebarLayoutRight = styled(Box)(({ theme }) => ({
+  boxSizing: "border-box",
   width: "320px",
   [theme.breakpoints.down("md")]: {
     display: "none",

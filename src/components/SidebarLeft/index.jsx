@@ -13,6 +13,7 @@ import { NavLink } from "react-router-dom";
 import PostModals from "../Modals/PostModals/index.jsx";
 import ProfileMore from "./components/ProfileMore.jsx";
 import NavLinkTo from "./components/NavLinkTo.jsx";
+import { useAuth } from "../../contexts/authContext/index.jsx";
 
 const Navbar = styled(List)(({ theme }) => ({
   [theme.breakpoints.down("lg")]: {
@@ -21,6 +22,8 @@ const Navbar = styled(List)(({ theme }) => ({
 }));
 
 function SidebarLeft() {
+  const { userDetail } = useAuth();
+
   return (
     <>
       <Box
@@ -60,7 +63,7 @@ function SidebarLeft() {
             />
             <NavLinkTo to="/likes" Icon={FavoriteIcon} primary="Likes" />
             <NavLinkTo
-              to="/profile"
+              to={`/profile/${userDetail.id}`}
               Icon={PersonOutlineIcon}
               primary="Profile"
             />

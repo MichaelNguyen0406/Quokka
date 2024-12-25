@@ -9,11 +9,28 @@ import {
 import { db } from "../firebase/config";
 import { useEffect, useState } from "react";
 
-function useFireStore(collectionName) {
+function useFireStore(collectionName, option = null) {
   const [documents, setDocuments] = useState([]);
   useEffect(() => {
-    const collectionRef = collection(db, collectionName);
-    const q = query(collectionRef, orderBy("createdAt", "desc"), limit(10));
+    let q = collection(db, collectionName);
+
+    if (option?.condition) {
+      const { field, operator, value } = option.condition;
+      q = query(
+        q,
+        where(field, operator, value),
+        orderBy("createdAt", "desc"),
+        limit(10)
+      );
+    }
+
+    if (option?.orderBy) {
+      q = query(q, orderBy("createdAt", "desc"));
+    }
+
+    if (option?.limit) {
+      q = query(q, limit(option.limit));
+    }
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const items = snapshot.docs.map((doc) => ({

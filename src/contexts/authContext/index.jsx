@@ -1,6 +1,9 @@
 // Import React
 import { createContext, useContext, useState, useEffect } from "react";
 
+// MUI
+import CircularProgress from "@mui/material/CircularProgress";
+
 // Import React Router Dom
 import { useNavigate } from "react-router-dom";
 
@@ -14,9 +17,7 @@ import { getDocumentById } from "../../firebase/service";
 const AuthContext = createContext();
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
 
 // eslint-disable-next-line react/prop-types
 function AuthProvider({ children }) {
@@ -25,31 +26,38 @@ function AuthProvider({ children }) {
   const [userDetail, setUserDetail] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, InitializeUser);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const ud = await getDocumentById("users", user.uid);
+          setCurrentUser(user);
+          setUserDetail({ ...ud, id: user.uid });
+          setUserLoggedIn(true);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      } else {
+        setCurrentUser(null);
+        setUserLoggedIn(false);
+      }
+      setLoading(false);
+    });
+
     return unsubscribe;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth]);
+  }, []);
 
-  const InitializeUser = async (user) => {
-    if (user) {
-      setCurrentUser(user);
-      console.log(user.uid);
-
-      const ud = await getDocumentById("users", user.uid);
-
-      setUserDetail({ ...ud, id: user.uid });
-      setUserLoggedIn(true);
-      Navigate("/");
-    } else {
-      setCurrentUser(null);
-      setUserLoggedIn(false);
-      Navigate("/login");
+  useEffect(() => {
+    if (!loading) {
+      if (userLoggedIn) {
+        navigate("/", { replace: true });
+      } else {
+        navigate("/login", { replace: true });
+      }
     }
-    setLoading(false);
-  };
+  }, [userLoggedIn]);
 
   const value = {
     currentUser,
@@ -60,7 +68,7 @@ function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {loading ? <CircularProgress /> : children}
     </AuthContext.Provider>
   );
 }

@@ -23,8 +23,6 @@ export const addDocument = async (collectionName, data) => {
 };
 
 export const addDocumentId = async (collectionName, data, documentId) => {
-  console.log(data);
-
   const docRef = doc(db, collectionName, documentId);
   try {
     await setDoc(docRef, { ...data, createdAt: new Date() });
