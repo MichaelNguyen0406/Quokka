@@ -114,13 +114,13 @@ function PostModals() {
 
   return (
     <>
-      <Box onClick={handleOpenModal}>
+      <Box onClick={handleOpenModal} minWidth="100%">
         <Hidden lgDown>
           <Button
             variant="contained"
             color="primary"
             fullWidth
-            style={{
+            sx={{
               borderRadius: "28px",
               padding: "10px",
               textTransform: "capitalize",
@@ -135,6 +135,7 @@ function PostModals() {
             color="primary"
             style={{
               borderRadius: "28px",
+              textAlign: "center",
               p: 0,
             }}
           >

@@ -57,7 +57,7 @@ function AuthProvider({ children }) {
         navigate("/login", { replace: true });
       }
     }
-  }, [userLoggedIn]);
+  }, [userLoggedIn, loading]);
 
   const value = {
     currentUser,

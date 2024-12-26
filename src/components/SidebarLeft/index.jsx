@@ -34,9 +34,15 @@ function SidebarLeft() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        <Box>
+        <Box
+          width="100%"
+          display="flex"
+          alignItems="center"
+          flexDirection="column"
+        >
           <Box>
             <NavLink
               to="/"
@@ -53,6 +59,7 @@ function SidebarLeft() {
             sx={{
               display: "flex",
               flexDirection: "column",
+              width: "100%",
             }}
           >
             <NavLinkTo to="/" Icon={HomeIcon} primary="Home" />
@@ -63,7 +70,7 @@ function SidebarLeft() {
             />
             <NavLinkTo to="/likes" Icon={FavoriteIcon} primary="Likes" />
             <NavLinkTo
-              to={`/profile/${userDetail.id}`}
+              to={`/profile/${userDetail?.id}`}
               Icon={PersonOutlineIcon}
               primary="Profile"
             />
