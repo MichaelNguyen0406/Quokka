@@ -12,7 +12,6 @@ import Avatar from "@mui/material/Avatar";
 
 function ProfileMore() {
   const { userDetail } = useAuth();
-
   // Sign Out
 
   const [anchorEl, setAnchorEl] = useState(null);

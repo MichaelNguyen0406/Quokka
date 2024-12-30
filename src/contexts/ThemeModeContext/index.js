@@ -8,7 +8,7 @@ const theme = createTheme({
     light: {
       palette: {
         primary: {
-          main: "#990012", // Màu chính cho light mode
+          main: "#0866ff", // Màu chính cho light mode
         },
         secondary: {
           main: "#ff4081", // Màu phụ cho light mode

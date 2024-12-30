@@ -1,8 +1,12 @@
+// Page
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import DetailPost from "../pages/DetailPost";
+import BookMark from "../pages/Bookmark";
 import SignIn from "../pages/Auth/SignIn";
 import SignUp from "../pages/Auth/SignUp";
+
+// Layout
 import LayoutAuth from "../components/layouts/LayoutAuth";
 
 export const publicRoutes = [
@@ -15,8 +19,12 @@ export const publicRoutes = [
     component: Profile,
   },
   {
-    path: "/detail-post",
+    path: "/detail-post/:id",
     component: DetailPost,
+  },
+  {
+    path: "/bookmarks",
+    component: BookMark,
   },
   {
     path: "/login",

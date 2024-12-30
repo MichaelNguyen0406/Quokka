@@ -1,25 +1,29 @@
-import { Box } from "@mui/system";
-import {
-  Avatar,
-  Button,
-  Grid,
-  IconButton,
-  Link,
-  Typography,
-} from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import CircularProgress from "@mui/material/CircularProgress";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import InsertLinkIcon from "@mui/icons-material/InsertLink";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 
-import { Link as RouteLink, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext";
 import useFireStore from "../../hooks/useFireStore";
 import Post from "../../components/Post";
 
+import { useState, useEffect } from "react";
+import { getDocumentById } from "../../firebase/service";
+
+import Header from "../../components/Header";
+
 export default function Profile() {
+  const [posts, setPosts] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { userDetail } = useAuth();
   const { id } = useParams();
   const option = {
@@ -28,45 +32,56 @@ export default function Profile() {
       operator: "==",
       value: id,
     },
+    orderBy: {
+      field: "createdAt",
+      value: "desc",
+    },
   };
-  const posts = useFireStore("posts", option);
-  console.log(posts);
+  const postsApi = useFireStore("posts", option);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const postsWithUserDetails = await Promise.all(
+          postsApi.map(async (post) => {
+            return new Promise((resolve) => {
+              getDocumentById(
+                "users",
+                post.user_id,
+                ({ displayName, photoURL }) => {
+                  resolve({ displayName, photoURL, ...post });
+                }
+              );
+            });
+          })
+        );
+
+        setPosts(postsWithUserDetails);
+      } catch (error) {
+        console.log("Error fetching posts or user data:: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (postsApi) {
+      fetchPosts();
+    }
+  }, [postsApi]);
 
   return (
-    <Box>
-      <Box borderBottom="1px solid #ccc" padding="8px 20px">
-        <Grid container alignItems="center">
-          <Grid item sx={{ mr: "10px" }}>
-            <RouteLink to="/">
-              <IconButton>
-                <ArrowBackIcon />
-              </IconButton>
-            </RouteLink>
-          </Grid>
-
-          <Grid item textAlign="start">
-            <Typography variant="h6" fontWeight="bold">
-              {userDetail?.displayName}
-            </Typography>
-            <Typography sx={{ fontSize: "12px", color: "#555" }}>
-              {userDetail?.listPost?.length} posts
-            </Typography>{" "}
-          </Grid>
-        </Grid>
-      </Box>
-      {/* <Box textAlign="center">
-        <Box marginTop="1rem">
-          <CircularProgress size={20} color="primary" />
-        </Box>
-      </Box> */}
-      <Box height="90vh" sx={{ overflowY: "scroll" }}>
+    <Box height="100vh">
+      <Header
+        pageName={userDetail?.displayName}
+        postCount={userDetail?.listPost}
+      />
+      <Box sx={{ overflowY: "scroll", height: "92vh" }}>
         <Box position="relative" height="195px" sx={{ bgcolor: "#eee" }}>
-          {userDetail.backgroundURL && (
+          {userDetail?.backgroundURL && (
             <img
               style={{ objectFit: "cover" }}
               width="100%"
               height="100%"
-              src={userDetail.backgroundURL}
+              src={userDetail?.backgroundURL}
               alt="background"
             />
           )}
@@ -143,20 +158,27 @@ export default function Profile() {
           </Box>
           <Box display="flex">
             <Typography color="#555" marginRight="1rem">
-              <strong style={{ color: "black" }}>23</strong>
+              <strong style={{ color: "black" }}>23 </strong>
               Following
             </Typography>
             <Typography color="#555" marginRight="1rem">
-              <strong style={{ color: "black" }}>23</strong>
+              <strong style={{ color: "black" }}>23 </strong>
               Followers
             </Typography>
           </Box>
         </Box>
-        <Box borderBottom="1px solid #ccc">
-          {posts.map((post, index) => (
-            <Post key={index} post={post} />
-          ))}
-        </Box>
+
+        {loading ? (
+          <Box>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box borderBottom="1px solid #ccc">
+            {posts.map((post, index) => (
+              <Post key={index} post={post} />
+            ))}
+          </Box>
+        )}
       </Box>
     </Box>
   );

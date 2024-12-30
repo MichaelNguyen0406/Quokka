@@ -16,16 +16,12 @@ function useFireStore(collectionName, option = null) {
 
     if (option?.condition) {
       const { field, operator, value } = option.condition;
-      q = query(
-        q,
-        where(field, operator, value),
-        orderBy("createdAt", "desc"),
-        limit(10)
-      );
+      q = query(q, where(field, operator, value));
     }
 
     if (option?.orderBy) {
-      q = query(q, orderBy("createdAt", "desc"));
+      const { field, value } = option.orderBy;
+      q = query(q, orderBy(field, value));
     }
 
     if (option?.limit) {

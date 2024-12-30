@@ -182,7 +182,11 @@ function PostModals() {
           >
             <Box display="flex">
               <ImageButton onChange={handleImageChange} />
-              <EmojiButton getEmoji={getEmoji} />
+              <EmojiButton
+                getEmoji={getEmoji}
+                transformOrigin={{ vertical: "bottom", horizontal: "center" }}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              />
             </Box>
             <LoadingButton
               onClick={handlePost}

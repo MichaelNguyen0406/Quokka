@@ -5,48 +5,48 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-
-import { Box } from "@mui/system";
+import Box from "@mui/material/Box";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import SyncIcon from "@mui/icons-material/Sync";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import IosShareIcon from "@mui/icons-material/IosShare";
-
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
+import { useState, useEffect } from "react";
 
 import Post from "../../components/Post";
 import { comments } from "../../apis/comment";
+import useFireStore from "../../hooks/useFireStore";
+import { getDocumentById } from "../../firebase/service";
+
+import Header from "../../components/Header";
 
 // Import React Router Dom
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function DetailPost() {
-  const Navigate = useNavigate();
+  const { id } = useParams();
+  const [post, setPost] = useState(null);
+  // const [loading, setLoading] = useState(true);
 
-  const HandleBack = () => {
-    Navigate("/");
-  };
+  useEffect(() => {
+    const postApi = new Promise((resole) => {
+      getDocumentById("posts", id, (data) => {
+        resole(data);
+      });
+    });
+
+    postApi.then((data) => {
+      getDocumentById("users", data.user_id, ({ displayName, photoURL }) => {
+        setPost({ ...data, displayName, photoURL });
+      });
+    });
+  }, []);
 
   return (
     <Box>
-      <Box
-        sx={{
-          // position: "fixed",
-          top: 0,
-          display: "flex",
-          gap: 2,
-          alignItems: "center",
-          py: "8px",
-        }}
-      >
-        <IconButton onClick={HandleBack}>
-          <ArrowBackIcon />
-        </IconButton>
-        <Typography variant="h6" fontWeight="bold">
-          Post
-        </Typography>
-      </Box>
+      <Header pageName="Post" />
 
       <Box padding="1rem">
         <Box>
@@ -160,9 +160,9 @@ function DetailPost() {
         </Box>
       </Box>
       <Box>
-        {comments.map((comment, index) => (
+        {/* {comments.map((comment, index) => (
           <Post post={comment} key={index} />
-        ))}
+        ))} */}
       </Box>
     </Box>
   );

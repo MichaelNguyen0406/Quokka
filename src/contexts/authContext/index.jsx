@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 // MUI
 import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 // Import React Router Dom
 import { useNavigate } from "react-router-dom";
@@ -32,18 +33,20 @@ function AuthProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-          const ud = await getDocumentById("users", user.uid);
+          await getDocumentById("users", user.uid, (data) =>
+            setUserDetail(data)
+          );
           setCurrentUser(user);
-          setUserDetail({ ...ud, id: user.uid });
           setUserLoggedIn(true);
         } catch (error) {
           console.error("Error fetching user data:", error);
+        } finally {
+          setLoading(false);
         }
       } else {
         setCurrentUser(null);
         setUserLoggedIn(false);
       }
-      setLoading(false);
     });
 
     return unsubscribe;
@@ -68,7 +71,13 @@ function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? <CircularProgress /> : children}
+      {loading ? (
+        <Box sx={{ textAlign: "center" }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 }

@@ -5,8 +5,8 @@ import {
   deleteDoc,
   doc,
   updateDoc,
-  getDoc,
   setDoc,
+  onSnapshot,
 } from "firebase/firestore";
 
 export const addDocument = async (collectionName, data) => {
@@ -35,16 +35,15 @@ export const deleteDocumentById = async (collectionName, documentId) => {
   return deleteDoc(doc(db, collectionName, documentId));
 };
 
-export const getDocumentById = async (collectionName, documentId) => {
+export const getDocumentById = (collectionName, documentId, callback) => {
   const docRef = doc(db, collectionName, documentId);
-  try {
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      return docSnap.data();
+  onSnapshot(docRef, (docSnapshot) => {
+    if (docSnapshot.exists()) {
+      callback({ id: docSnapshot.id, ...docSnapshot.data() });
+    } else {
+      console.error("Document does not exist");
     }
-  } catch (error) {
-    console.log("Error: ", error);
-  }
+  });
 };
 
 export const updateCollectionFieldById = async (
