@@ -14,7 +14,7 @@ function AvatarPost({ photoURL, userId }) {
   };
 
   return (
-    <Box sx={{ pr: 1 }}>
+    <Box sx={{ pr: 1, ml: "-0.5rem" }}>
       <IconButton onClick={handleClick}>
         <Avatar src={photoURL && photoURL} />
       </IconButton>

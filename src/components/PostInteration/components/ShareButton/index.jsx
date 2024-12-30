@@ -65,7 +65,7 @@ function ShareButton({ post = {} }) {
       const dataShare = {
         user_id_share: userDetail.id,
         post_id: post.id,
-        caption: valueInput,
+        caption_user_share: valueInput,
       };
       await addDocument("shares", dataShare);
       setSnackbar({

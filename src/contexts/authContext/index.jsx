@@ -46,6 +46,7 @@ function AuthProvider({ children }) {
       } else {
         setCurrentUser(null);
         setUserLoggedIn(false);
+        setLoading(false);
       }
     });
 
@@ -72,7 +73,7 @@ function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={value}>
       {loading ? (
-        <Box sx={{ textAlign: "center" }}>
+        <Box sx={{ mt: "100px", textAlign: "center" }}>
           <CircularProgress />
         </Box>
       ) : (

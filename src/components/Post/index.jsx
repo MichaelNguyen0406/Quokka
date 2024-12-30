@@ -26,24 +26,37 @@ function Post({ post }) {
           },
         }}
       >
-        <AvatarPost photoURL={post?.photoURL} userId={post?.user_id} />
         <Box flexGrow="1">
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Box sx={{ display: "flex", flexWrap: "wrap", overflow: "hidden" }}>
-              <Typography sx={{ fontSize: "15px", mr: "6px", fontWeight: 600 }}>
-                {post?.displayName}
-              </Typography>
-              <Typography sx={{ fontSize: "15px", mr: "6px", color: "#555" }}>
-                {postTime(post.createdAt.toDate())}
-              </Typography>
+          <Box display="flex" alignItems="center">
+            <AvatarPost photoURL={post?.photoURL} userId={post?.user_id} />
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  flexDirection: "column",
+                  overflow: "hidden",
+                  textAlign: "start",
+                }}
+              >
+                <Typography
+                  sx={{ fontSize: "15px", mr: "6px", fontWeight: 600 }}
+                >
+                  {post?.displayName}
+                </Typography>
+                <Typography sx={{ fontSize: "13px", mr: "6px", color: "#555" }}>
+                  {postTime(post.createdAt.toDate())}
+                </Typography>
+              </Box>
+              <ActionButton name="posts" id={post?.id} />
             </Box>
-            <ActionButton name="posts" id={post?.id} />
           </Box>
           <Box>
             <Typography
