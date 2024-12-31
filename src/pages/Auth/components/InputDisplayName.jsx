@@ -4,11 +4,11 @@ import TextField from "@mui/material/TextField";
 function InputDisplayName({ error, touched, value, handleChange }) {
   return (
     <TextField
-      sx={{ mt: 2.5 }}
+      sx={{ mb: 2.5 }}
       fullWidth
       name="displayName"
       type="text"
-      label="Display Name"
+      label="Tên hiển thị*"
       onChange={handleChange}
       value={value}
       error={error && touched ? true : false}

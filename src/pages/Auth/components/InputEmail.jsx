@@ -4,11 +4,11 @@ import TextField from "@mui/material/TextField";
 function InputEmail({ error, touched, value, handleChange }) {
   return (
     <TextField
-      sx={{ mt: 2.5 }}
+      sx={{ mb: 2.5 }}
       fullWidth
       name="email"
       type="email"
-      label="Email"
+      label="Email*"
       onChange={handleChange}
       value={value}
       error={error && touched ? true : false}

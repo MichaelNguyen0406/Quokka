@@ -1,10 +1,9 @@
 // Import Material UI
-import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 // Import Lib
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useFormik } from "formik";
 
 // Import file
@@ -12,7 +11,6 @@ import { signUpSchema } from "../../../Schemas/index.js";
 import InputEmail from "../components/InputEmail.jsx";
 import InputPassword from "../components/InputPassword.jsx";
 import InputSubmit from "../components/InputSubmit.jsx";
-import InputCheckBox from "../components/InputCheckBox.jsx";
 import InputDisplayName from "../components/InputDisplayName.jsx";
 
 // Auth
@@ -22,6 +20,8 @@ import { updateProfile } from "firebase/auth";
 import { addDocumentId } from "../../../firebase/service.js";
 
 function SignUp() {
+  document.title = "Đăng ký - Quokka";
+
   const [loading, setLoading] = useState(false);
   // Validation form
   const onSubmit = async () => {
@@ -67,12 +67,21 @@ function SignUp() {
   });
 
   return (
-    <Card sx={{ width: 300, textAlign: "center", padding: 4 }}>
-      <Typography variant="h3" sx={{ mb: 1 }}>
-        Sign up
-      </Typography>
-      <Typography>
-        Already have an account? <Link to="/login">Sign in here</Link>
+    <Box sx={{ width: "320px", textAlign: "center", padding: 5 }}>
+      <Box mb={4}>
+        <img
+          style={{
+            width: "80px",
+            height: "auto",
+          }}
+          src="https://res.cloudinary.com/dohadwixt/image/upload/v1735587953/aOHHsQACSf645PnYWA2AeQ_dg4lpg-removebg-preview_2_vmhuxh.png"
+        />
+      </Box>
+      <Typography
+        variant="h4"
+        sx={{ fontWeight: "bold", mb: 4, color: "#2d333a" }}
+      >
+        Đăng ký
       </Typography>
       <Box component="form" onSubmit={handleSubmit}>
         <InputDisplayName
@@ -93,14 +102,6 @@ function SignUp() {
           touched={touched.password}
           error={errors.password}
         />
-        <InputPassword
-          handleChange={handleChange}
-          value={values.passwordConfirm}
-          touched={touched.passwordConfirm}
-          error={errors.passwordConfirm}
-          name="passwordConfirm"
-          label="Password Confirm"
-        />
         <Box
           sx={{
             display: "flex",
@@ -108,17 +109,38 @@ function SignUp() {
             alignItems: "center",
           }}
         >
-          <InputCheckBox
-            handleChange={handleChange}
-            value={values.check}
-            label="Keep me signed in"
-          />
-          <Link to="/forgot-password">Forgot password?</Link>
+          <NavLink
+            style={{ textDecoration: "none", marginBottom: "20px" }}
+            to="/forgot-password"
+          >
+            <Typography color="primary">Quên mật khẩu?</Typography>
+          </NavLink>
         </Box>
-        <InputSubmit loading={loading}>Sign me up</InputSubmit>
+        <InputSubmit loading={loading}>Đăng ký</InputSubmit>
       </Box>
-      <Typography>©2024.All rights reserved</Typography>
-    </Card>
+      {/* <Box
+        sx={{ my: 3, backgroundColor: "#f0f8ff", padding: 2, borderRadius: 1 }}
+      >
+        <Typography variant="body2" color="primary">
+          Chúng tôi đã gửi email xác minh đến địa chỉ của bạn. Vui lòng kiểm tra
+          hộp thư để hoàn tất đăng ký.
+        </Typography>
+      </Box> */}
+      <Typography>
+        Đã có tài khoản?
+        <NavLink
+          to="/login"
+          style={{
+            textDecoration: "none",
+            marginBottom: "20px",
+          }}
+        >
+          <Typography ml={0.8} color="primary" display="inline">
+            Đăng nhập
+          </Typography>
+        </NavLink>
+      </Typography>
+    </Box>
   );
 }
 

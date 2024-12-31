@@ -1,5 +1,4 @@
 // Import Material UI
-import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
@@ -12,13 +11,14 @@ import { signInSchema } from "../../../Schemas/index.js";
 import InputEmail from "../components/InputEmail.jsx";
 import InputPassword from "../components/InputPassword.jsx";
 import InputSubmit from "../components/InputSubmit.jsx";
-import InputCheckBox from "../components/InputCheckBox.jsx";
+import LoginWithGoogleButton from "../components/LoginWithGoogleButton.jsx";
 
 // Auth
 import { doSignInWithEmailAndPassword } from "../../../firebase/auth.js";
 import { useState } from "react";
 
 function SignIn() {
+  document.title = "Đăng nhập - Quokka";
   const [loading, setLoading] = useState(false);
 
   // Authentication
@@ -61,16 +61,29 @@ function SignIn() {
   // Submit
 
   return (
-    <Card sx={{ width: 300, textAlign: "center", padding: 4 }}>
-      <Typography variant="h3" sx={{ mb: 1 }}>
-        Sign in
+    <Box sx={{ width: "320px", textAlign: "center", padding: 5 }}>
+      <Box mb={4}>
+        <img
+          style={{
+            width: "80px",
+            height: "auto",
+          }}
+          src="https://res.cloudinary.com/dohadwixt/image/upload/v1735587953/aOHHsQACSf645PnYWA2AeQ_dg4lpg-removebg-preview_2_vmhuxh.png"
+        />
+      </Box>
+      <Typography
+        variant="h4"
+        sx={{ fontWeight: "bold", mb: 4, color: "#2d333a" }}
+      >
+        Đăng nhập
       </Typography>
-      <Typography>
+
+      {/* <Typography>
         Don&apos;t have an account?{" "}
         <NavLink style={{ textDecoration: "none" }} to="/sign-up">
           Click here to sign up
         </NavLink>
-      </Typography>
+      </Typography> */}
       <Box component="form" onSubmit={handleSubmit}>
         <InputEmail
           handleChange={handleChange}
@@ -92,19 +105,48 @@ function SignIn() {
             my: 0,
           }}
         >
-          <InputCheckBox
-            handleChange={handleChange}
-            label="Remember me?"
-            value={values.isAgreed}
-          />
-          <NavLink style={{ textDecoration: "none" }} to="/forgot-password">
-            Forgot password?
+          <NavLink
+            style={{ textDecoration: "none", marginBottom: "20px" }}
+            to="/forgot-password"
+          >
+            <Typography color="primary">Quên mật khẩu?</Typography>
           </NavLink>
         </Box>
-        <InputSubmit loading={loading}>Login</InputSubmit>
+        <InputSubmit loading={loading}>Đăng nhập</InputSubmit>
       </Box>
-      <Typography>©2024.All rights reserved</Typography>
-    </Card>
+      <Typography mb={4}>
+        Không có tài khoản?
+        <NavLink
+          to="/sign-up"
+          style={{
+            textDecoration: "none",
+            marginBottom: "20px",
+          }}
+        >
+          <Typography ml={0.8} color="primary" display="inline">
+            Đăng ký
+          </Typography>
+        </NavLink>
+      </Typography>
+      <Box sx={{ position: "relative", mb: 4 }}>
+        <Typography
+          sx={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "white",
+            p: "1rem",
+            fontSize: "13px",
+            color: "#2d333a",
+          }}
+        >
+          HOẶC
+        </Typography>
+        <hr />
+      </Box>
+      <LoginWithGoogleButton />
+    </Box>
   );
 }
 

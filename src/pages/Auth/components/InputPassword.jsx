@@ -13,7 +13,7 @@ function InputPassword({
   touched,
   error,
   name = "password",
-  label = "Password",
+  label = "Mật khẩu*",
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -26,7 +26,7 @@ function InputPassword({
 
   return (
     <TextField
-      sx={{ mt: 2.5 }}
+      sx={{ mb: 2.5 }}
       fullWidth
       name={name}
       type={showPassword ? "text" : "password"}
