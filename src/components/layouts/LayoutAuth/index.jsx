@@ -8,7 +8,7 @@ function LayoutAuth({ children }) {
         minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
+        // alignItems: "center",
       }}
     >
       {children}

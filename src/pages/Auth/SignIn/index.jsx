@@ -62,7 +62,7 @@ function SignIn() {
 
   return (
     <Box sx={{ width: "320px", textAlign: "center", padding: 5 }}>
-      <Box mb={4}>
+      <Box mb={12.5}>
         <img
           style={{
             width: "80px",
@@ -75,7 +75,7 @@ function SignIn() {
         variant="h4"
         sx={{ fontWeight: "bold", mb: 4, color: "#2d333a" }}
       >
-        Đăng nhập
+        Chào mừng bạn quay lại
       </Typography>
 
       {/* <Typography>
@@ -123,7 +123,12 @@ function SignIn() {
             marginBottom: "20px",
           }}
         >
-          <Typography ml={0.8} color="primary" display="inline">
+          <Typography
+            component="span"
+            ml={0.8}
+            color="primary"
+            display="inline"
+          >
             Đăng ký
           </Typography>
         </NavLink>

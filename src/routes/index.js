@@ -5,6 +5,7 @@ import DetailPost from "../pages/DetailPost";
 import BookMark from "../pages/Bookmark";
 import SignIn from "../pages/Auth/SignIn";
 import SignUp from "../pages/Auth/SignUp";
+import ProfileSetup from "../pages/Auth/ProfileSetup";
 
 // Layout
 import LayoutAuth from "../components/layouts/LayoutAuth";
@@ -34,6 +35,11 @@ export const publicRoutes = [
   {
     path: "/sign-up",
     component: SignUp,
+    layout: LayoutAuth,
+  },
+  {
+    path: "/profile-setup",
+    component: ProfileSetup,
     layout: LayoutAuth,
   },
 ];

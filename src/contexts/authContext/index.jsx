@@ -53,15 +53,15 @@ function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  useEffect(() => {
-    if (!loading) {
-      if (userLoggedIn) {
-        navigate("/", { replace: true });
-      } else {
-        navigate("/login", { replace: true });
-      }
-    }
-  }, [userLoggedIn, loading]);
+  // useEffect(() => {
+  //   if (!loading) {
+  //     if (userLoggedIn) {
+  //       navigate("/", { replace: true });
+  //     } else {
+  //       navigate("/login", { replace: true });
+  //     }
+  //   }
+  // }, [userLoggedIn, loading]);
 
   const value = {
     currentUser,

@@ -11,7 +11,7 @@ const theme = createTheme({
           main: "#0866ff", // Màu chính cho light mode
         },
         secondary: {
-          main: "#ff4081", // Màu phụ cho light mode
+          main: "#1976D2", // Màu phụ cho light mode
         },
         background: {
           default: "#EDEDED", // Màu nền cho light mode

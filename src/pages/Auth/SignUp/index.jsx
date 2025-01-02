@@ -1,74 +1,109 @@
 // Import Material UI
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import Alert from "@mui/material/Alert";
 
 // Import Lib
-import { NavLink } from "react-router-dom";
-import { useFormik } from "formik";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 // Import file
-import { signUpSchema } from "../../../Schemas/index.js";
 import InputEmail from "../components/InputEmail.jsx";
 import InputPassword from "../components/InputPassword.jsx";
+import InputNext from "../components/inputNext.jsx";
 import InputSubmit from "../components/InputSubmit.jsx";
-import InputDisplayName from "../components/InputDisplayName.jsx";
+import LoginWithGoogleButton from "../components/LoginWithGoogleButton.jsx";
+import checkEmail from "../../../helper/checkEmail.js";
+import StatusPassword from "./components/StatusPassword.jsx";
+import checkPassword from "../../../helper/checkPassword.js";
 
 // Auth
 import { doCreateUserWithEmailAndPassword } from "../../../firebase/auth.js";
-import { useState } from "react";
 import { updateProfile } from "firebase/auth";
 import { addDocumentId } from "../../../firebase/service.js";
 
 function SignUp() {
   document.title = "Đăng ký - Quokka";
+  const navigate = useNavigate();
 
+  // State SignUp Handle
   const [loading, setLoading] = useState(false);
-  // Validation form
-  const onSubmit = async () => {
-    setLoading(true);
-    try {
-      const userCredential = await doCreateUserWithEmailAndPassword(
-        values.email,
-        values.password
-      );
-      const user = userCredential.user;
-      await updateProfile(user, {
-        displayName: values.displayName,
-      });
+  const [nextEmail, setNextEmail] = useState(false);
+  const [prevPassword, setPrevPassword] = useState(true);
 
-      const dataUser = {
-        displayName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        listPost: [],
-        listComment: [],
-        listLike: [],
-        listBookmark: [],
-        listFriend: [],
-      };
-      await addDocumentId("users", dataUser, user.uid);
-    } catch (error) {
-      console.log(error.message);
-    } finally {
-      setLoading(false);
+  // State Email Handle
+  const [valueEmail, setValueEmail] = useState("");
+  const [errorEmail, setErrorEmail] = useState(false);
+
+  const handleChangeEmail = (e) => {
+    setValueEmail(e.target.value);
+    setErrorEmail(false);
+  };
+
+  // State Password Handle
+  const [valuePassword, setValuePassword] = useState("");
+  const [errorPassword, setErrorPassword] = useState(false);
+
+  const handleChangePassword = (e) => {
+    setValuePassword(e.target.value);
+    setErrorPassword(false);
+  };
+
+  // Submit handle
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (checkPassword(valuePassword)) {
+      setLoading(true);
+      try {
+        const userCredential = await doCreateUserWithEmailAndPassword(
+          valueEmail,
+          valuePassword
+        );
+        const user = userCredential.user;
+
+        await updateProfile(user, {
+          displayName: user.email.split("@")[0],
+        });
+        const dataUser = {
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          listPost: [],
+          listComment: [],
+          listLike: [],
+          listBookmark: [],
+          listFriend: [],
+        };
+        await addDocumentId("users", dataUser, user.uid);
+        navigate("/profile-setup");
+      } catch (error) {
+        console.log("Error sign up: ", error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setErrorPassword(true);
     }
   };
 
-  const { handleChange, handleSubmit, values, errors, touched } = useFormik({
-    initialValues: {
-      displayName: "",
-      email: "",
-      password: "",
-      passwordConfirm: "",
-      isAgreed: false,
-    },
-    validationSchema: signUpSchema,
-    onSubmit,
-  });
+  // ....
+  const handleNext = () => {
+    if (!checkEmail(valueEmail)) {
+      setErrorEmail(true);
+    } else {
+      setNextEmail(true);
+      setPrevPassword(false);
+    }
+  };
+
+  const handleBack = () => {
+    setNextEmail(false);
+    setPrevPassword(true);
+  };
 
   return (
     <Box sx={{ width: "320px", textAlign: "center", padding: 5 }}>
-      <Box mb={4}>
+      <Box mb={12.5}>
         <img
           style={{
             width: "80px",
@@ -81,42 +116,36 @@ function SignUp() {
         variant="h4"
         sx={{ fontWeight: "bold", mb: 4, color: "#2d333a" }}
       >
-        Đăng ký
+        Tạo một tài khoản
       </Typography>
       <Box component="form" onSubmit={handleSubmit}>
-        <InputDisplayName
-          handleChange={handleChange}
-          values={values.displayName}
-          touched={touched.displayName}
-          error={errors.displayName}
-        />
         <InputEmail
-          handleChange={handleChange}
-          values={values.email}
-          touched={touched.email}
-          error={errors.email}
+          handleChange={handleChangeEmail}
+          values={valueEmail}
+          error={errorEmail}
+          disabled={nextEmail}
         />
-        <InputPassword
-          handleChange={handleChange}
-          value={values.password}
-          touched={touched.password}
-          error={errors.password}
-        />
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <NavLink
-            style={{ textDecoration: "none", marginBottom: "20px" }}
-            to="/forgot-password"
-          >
-            <Typography color="primary">Quên mật khẩu?</Typography>
-          </NavLink>
-        </Box>
-        <InputSubmit loading={loading}>Đăng ký</InputSubmit>
+        {nextEmail && (
+          <InputPassword
+            handleChange={handleChangePassword}
+            values={valuePassword}
+          />
+        )}
+        {!errorPassword && valuePassword.length > 0 && (
+          <StatusPassword value={valuePassword} />
+        )}
+        {errorPassword && (
+          <Box mb={2.5}>
+            <Alert variant="outlined" severity="error">
+              Mật khẩu của bạn chưa hợp lệ.
+            </Alert>
+          </Box>
+        )}
+        {nextEmail ? (
+          <InputSubmit loading={loading}>Đăng ký</InputSubmit>
+        ) : (
+          <InputNext onClick={handleNext}>Tiếp tục</InputNext>
+        )}
       </Box>
       {/* <Box
         sx={{ my: 3, backgroundColor: "#f0f8ff", padding: 2, borderRadius: 1 }}
@@ -126,20 +155,61 @@ function SignUp() {
           hộp thư để hoàn tất đăng ký.
         </Typography>
       </Box> */}
-      <Typography>
-        Đã có tài khoản?
-        <NavLink
-          to="/login"
-          style={{
-            textDecoration: "none",
-            marginBottom: "20px",
+      {prevPassword ? (
+        <Typography mb={4}>
+          Đã có tài khoản?
+          <NavLink
+            to="/login"
+            style={{
+              textDecoration: "none",
+              marginBottom: "20px",
+            }}
+          >
+            <Typography
+              component="span"
+              ml={0.8}
+              color="primary"
+              display="inline"
+            >
+              Đăng nhập
+            </Typography>
+          </NavLink>
+        </Typography>
+      ) : (
+        <Typography
+          color="primary"
+          onClick={handleBack}
+          sx={{
+            mt: 2,
+            fontWeight: "bold",
+            "&:hover": { cursor: "pointer" },
           }}
         >
-          <Typography ml={0.8} color="primary" display="inline">
-            Đăng nhập
-          </Typography>
-        </NavLink>
-      </Typography>
+          Quay lại
+        </Typography>
+      )}
+      {prevPassword && (
+        <>
+          <Box sx={{ position: "relative", mb: 4 }}>
+            <Typography
+              sx={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                bgcolor: "white",
+                p: "1rem",
+                fontSize: "13px",
+                color: "#2d333a",
+              }}
+            >
+              HOẶC
+            </Typography>
+            <hr />
+          </Box>
+          <LoginWithGoogleButton />
+        </>
+      )}
     </Box>
   );
 }
