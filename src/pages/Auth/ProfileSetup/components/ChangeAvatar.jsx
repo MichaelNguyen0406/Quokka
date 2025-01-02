@@ -5,7 +5,39 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import Box from "@mui/material/Box";
 
 import { useState } from "react";
-import AvatarEditor from "react-avatar-edit";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
+
+import ImageButton from "../../../../components/ImageButton";
+
+// const ChangeAvatar = () => {
+//   const [src, setSrc] = useState(null);
+
+//   const onFileChange = (e) => {
+//     const file = e.target.files[0];
+//     const reader = new FileReader();
+//     reader.onload = () => setSrc(reader.result);
+//     reader.readAsDataURL(file);
+//   };
+
+//   return (
+//     <div>
+//       <input type="file" onChange={onFileChange} />
+//       {src && (
+//         <Cropper
+//           src={src}
+//           style={{ height: 400, width: "100%" }}
+//           aspectRatio={1}
+//           guides={false}
+//           scalable={true}
+//           cropBoxResizable={true}
+//         />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default ChangeAvatar;
 
 const style = {
   position: "absolute",
@@ -16,66 +48,39 @@ const style = {
   borderRadius: "4px",
   width: "700px",
   boxShadow: 24,
-  display: "flex",
-  justifyContent: "center",
-  p: 4,
 };
 
+// eslint-disable-next-line react/prop-types
 function ChangeAvatar({ setAvatar }) {
   const [open, setOpen] = useState(false);
-  const handleChangeAvatar = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
-  // Image Handle
-  const [preview, setPreview] = useState(null); // Lưu trữ ảnh preview
-  const [image, setImage] = useState(null); // Lưu trữ ảnh gốc
+  const [src, setSrc] = useState(null); // Để lưu trữ ảnh tải lên
 
-  // Hàm để lấy ảnh sau khi crop
-  const handleCrop = (view) => {
-    setPreview(view);
-    setAvatar(view); // Lưu ảnh đã crop vào state
+  const handleClose = () => {
+    setOpen(false);
+    setSrc(null);
   };
 
-  // Hàm để reset lại ảnh
-  const handleReset = () => {
-    setImage(null);
-    setPreview(null);
-  };
-
-  // Hàm để tải ảnh từ máy tính
-  const handleFileChange = (e) => {
+  const onFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
+    const reader = new FileReader();
+    reader.onload = () => setSrc(reader.result); // Đọc file ảnh khi người dùng chọn ảnh
+    reader.readAsDataURL(file);
+    setOpen(true);
+  };
 
-      // Chờ ảnh được load xong
-      img.onload = () => {
-        // Giới hạn kích thước ảnh nếu cần thiết
-        const MAX_WIDTH = 1000; // Ví dụ giới hạn độ rộng ảnh tối đa
-        const MAX_HEIGHT = 1000; // Ví dụ giới hạn độ cao ảnh tối đa
-
-        let width = img.width;
-        let height = img.height;
-
-        // Nếu ảnh quá lớn, giảm kích thước để phù hợp
-        if (width > MAX_WIDTH || height > MAX_HEIGHT) {
-          const scale = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
-          width = width * scale;
-          height = height * scale;
-        }
-
-        // Đặt ảnh đã chỉnh kích thước vào state
-        setImage(URL.createObjectURL(file));
-      };
-    }
+  const onCrop = () => {
+    // Lấy dữ liệu ảnh đã cắt
+    const cropper = document.getElementById("cropper"); // Lấy reference đến element Cropper
+    const croppedData = cropper.cropper.getCroppedCanvas().toDataURL(); // Convert canvas thành ảnh base64
+    setAvatar(croppedData);
   };
 
   return (
     <>
-      <Button
+      <ImageButton
         variant="outlined"
-        onClick={handleChangeAvatar}
+        onChange={onFileChange}
         sx={{
           color: "#444",
           border: "1px solid #c4c4c4",
@@ -85,7 +90,7 @@ function ChangeAvatar({ setAvatar }) {
       >
         <BorderColorIcon fontSize="small" />
         <Typography sx={{ ml: "4px" }}>Thay đổi</Typography>
-      </Button>
+      </ImageButton>
       <Modal
         open={open}
         onClose={handleClose}
@@ -93,25 +98,37 @@ function ChangeAvatar({ setAvatar }) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <AvatarEditor
-            imageWidth={500}
-            cropRadius={125} // Đặt bán kính crop thành vòng tròn
-            image={image} // Ảnh được tải lên
-            onCrop={handleCrop} // Hàm xử lý crop
-            onClose={handleReset} // Hàm reset ảnh
-            label="Chỉnh sửa avatar" // Tiêu đề
-          />
-          {/* {preview && (
-            <img
-              src={preview}
-              alt="Preview Avatar"
-              style={{
-                maxWidth: "100%",
-                maxHeight: "250px",
-                objectFit: "contain",
-              }}
-            />
-          )} */}
+          <Box sx={{ textAlign: "center", p: 2.5 }}>
+            <Typography sx={{ fontSize: "24px", fontWeight: "bold" }}>
+              Chọn ảnh đại diện
+            </Typography>
+          </Box>
+          <hr />
+          <Box sx={{ p: 4, textAlign: "center" }}>
+            {src && (
+              <>
+                <Cropper
+                  id="cropper"
+                  src={src}
+                  style={{ width: "100%", height: "auto" }} // Kích thước của cropper
+                  aspectRatio={1} // Tỉ lệ cắt (1:1 là hình vuông)
+                  guides={false} // Hiển thị hướng dẫn lưới
+                  scalable={true} // Cho phép kéo giãn
+                  cropBoxResizable={true} // Cho phép điều chỉnh kích thước hộp cắt
+                />
+                <Button variant="outlined" onClick={onCrop} sx={{ mt: 2.5 }}>
+                  Cắt ảnh
+                </Button>
+              </>
+            )}
+          </Box>
+          <hr />
+          <Box sx={{ p: 2, textAlign: "end" }}>
+            <Button sx={{ mr: 1 }} onClick={handleClose}>
+              Huỷ
+            </Button>
+            <Button variant="contained">Hoàn tất</Button>
+          </Box>
         </Box>
       </Modal>
     </>
@@ -144,92 +161,3 @@ export default ChangeAvatar;
             />
           </Box> */
 }
-
-// import React, { useState, useRef } from "react";
-
-// function ChangeAvatar() {
-//   const [image, setImage] = useState(null);
-//   const [croppedImage, setCroppedImage] = useState(null);
-//   const [crop, setCrop] = useState({ x: 100, y: 50, width: 100, height: 100 });
-//   const canvasRef = useRef(null);
-//   const imageRef = useRef(null);
-
-//   // Hàm tải ảnh
-//   const handleImageChange = (e) => {
-//     const file = e.target.files[0];
-//     if (file) {
-//       const reader = new FileReader();
-//       reader.onloadend = () => {
-//         setImage(reader.result);
-//       };
-//       reader.readAsDataURL(file);
-//     }
-//   };
-
-//   // Hàm để crop ảnh
-//   const handleCrop = () => {
-//     const canvas = canvasRef.current;
-//     const ctx = canvas.getContext("2d");
-//     const image = imageRef.current;
-//     console.log(ctx);
-
-//     const { x, y, width, height } = crop;
-
-//     // Set kích thước canvas để phù hợp với khu vực crop
-//     canvas.width = width;
-//     canvas.height = height;
-
-//     // Vẽ ảnh đã crop lên canvas
-//     ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
-
-//     // Lấy ảnh đã crop từ canvas dưới dạng base64
-//     const croppedUrl = canvas.toDataURL();
-//     setCroppedImage(croppedUrl);
-//   };
-
-//   // Hàm để điều chỉnh vùng crop
-//   const handleDrag = (e) => {
-//     const { movementX, movementY } = e;
-//     // console.log(movementX, movementY);
-//     setCrop((prev) => ({
-//       ...prev,
-//       x: prev.x + movementX,
-//       y: prev.y + movementY,
-//     }));
-//   };
-
-//   return (
-//     <div>
-//       <input type="file" accept="image/*" onChange={handleImageChange} />
-//       {image && (
-//         <div style={{ position: "relative", display: "inline-block" }}>
-//           <img
-//             src={image}
-//             alt="Avatar"
-//             ref={imageRef}
-//             style={{ width: "300px", height: "auto" }}
-//           />
-//           <div
-//             onMouseDown={(e) => e.preventDefault()}
-//             style={{
-//               position: "absolute",
-//               top: crop.y,
-//               left: crop.x,
-//               width: crop.width,
-//               height: crop.height,
-//               border: "2px solid red",
-//               borderRadius: "50%",
-//               cursor: "move",
-//             }}
-//             onMouseMove={handleDrag}
-//           />
-//         </div>
-//       )}
-//       <button onClick={handleCrop}>Crop Image</button>
-//       {croppedImage && <img src={croppedImage} alt="Cropped Avatar" />}
-//       <canvas ref={canvasRef} style={{ display: "none" }} />
-//     </div>
-//   );
-// }
-
-// export default ChangeAvatar;

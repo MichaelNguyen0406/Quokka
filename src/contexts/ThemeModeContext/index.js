@@ -62,7 +62,7 @@ const theme = createTheme({
         },
         outlined: {
           // Áp dụng riêng cho variant "text"
-          color: "#E87EA1",
+          color: "#0866ff",
         },
       },
     },
