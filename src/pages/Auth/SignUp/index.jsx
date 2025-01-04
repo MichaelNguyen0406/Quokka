@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 
 // Import Lib
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useState } from "react";
 
 // Import file
@@ -24,7 +24,6 @@ import { addDocumentId } from "../../../firebase/service.js";
 
 function SignUp() {
   document.title = "Đăng ký - Quokka";
-  const navigate = useNavigate();
 
   // State SignUp Handle
   const [loading, setLoading] = useState(false);
@@ -65,6 +64,7 @@ function SignUp() {
           displayName: user.email.split("@")[0],
         });
         const dataUser = {
+          newUser: true,
           displayName: user.displayName,
           email: user.email,
           photoURL: user.photoURL,
@@ -75,7 +75,6 @@ function SignUp() {
           listFriend: [],
         };
         await addDocumentId("users", dataUser, user.uid);
-        navigate("/profile-setup");
       } catch (error) {
         console.log("Error sign up: ", error);
       } finally {

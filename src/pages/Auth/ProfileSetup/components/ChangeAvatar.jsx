@@ -3,41 +3,18 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import Box from "@mui/material/Box";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
+import LoadingButton from "@mui/lab/LoadingButton";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 
 import ImageButton from "../../../../components/ImageButton";
-
-// const ChangeAvatar = () => {
-//   const [src, setSrc] = useState(null);
-
-//   const onFileChange = (e) => {
-//     const file = e.target.files[0];
-//     const reader = new FileReader();
-//     reader.onload = () => setSrc(reader.result);
-//     reader.readAsDataURL(file);
-//   };
-
-//   return (
-//     <div>
-//       <input type="file" onChange={onFileChange} />
-//       {src && (
-//         <Cropper
-//           src={src}
-//           style={{ height: 400, width: "100%" }}
-//           aspectRatio={1}
-//           guides={false}
-//           scalable={true}
-//           cropBoxResizable={true}
-//         />
-//       )}
-//     </div>
-//   );
-// };
-
-// export default ChangeAvatar;
+import useImageUploader from "../../../../hooks/useImagesUploader";
+import { updateCollectionFieldById } from "../../../../firebase/service";
+import { useAuth } from "../../../../contexts/authContext";
 
 const style = {
   position: "absolute",
@@ -52,28 +29,43 @@ const style = {
 
 // eslint-disable-next-line react/prop-types
 function ChangeAvatar({ setAvatar }) {
+  // Modal
   const [open, setOpen] = useState(false);
-
-  const [src, setSrc] = useState(null); // Để lưu trữ ảnh tải lên
-
   const handleClose = () => {
     setOpen(false);
     setSrc(null);
   };
 
+  // Image
+  const [src, setSrc] = useState(null);
+  const cropperRef = useRef();
   const onFileChange = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => setSrc(reader.result); // Đọc file ảnh khi người dùng chọn ảnh
-    reader.readAsDataURL(file);
-    setOpen(true);
+    if (file) {
+      const imgURL = URL.createObjectURL(file);
+      setOpen(true);
+      setSrc(imgURL);
+    }
   };
 
-  const onCrop = () => {
-    // Lấy dữ liệu ảnh đã cắt
-    const cropper = document.getElementById("cropper"); // Lấy reference đến element Cropper
-    const croppedData = cropper.cropper.getCroppedCanvas().toDataURL(); // Convert canvas thành ảnh base64
+  // Image Handle
+  const { userDetail } = useAuth();
+  const { uploadImages, uploading } = useImageUploader(
+    "dohadwixt",
+    "social_network"
+  );
+  const onCrop = async () => {
+    const cropper = cropperRef.current;
+    const croppedData = cropper.cropper.getCroppedCanvas().toDataURL();
+    const url = await uploadImages([croppedData]);
+    await updateCollectionFieldById(
+      "users",
+      userDetail?.id,
+      "photoURL",
+      url[0]
+    );
     setAvatar(croppedData);
+    setOpen(false);
   };
 
   return (
@@ -98,36 +90,60 @@ function ChangeAvatar({ setAvatar }) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Box sx={{ textAlign: "center", p: 2.5 }}>
+          <Box sx={{ textAlign: "center", p: 2.5, position: "relative" }}>
             <Typography sx={{ fontSize: "24px", fontWeight: "bold" }}>
               Chọn ảnh đại diện
             </Typography>
+            <IconButton
+              onClick={handleClose}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                right: "1rem",
+                transform: "translateY(-50%)",
+                bgcolor: "#e2e5e9",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
           </Box>
           <hr />
           <Box sx={{ p: 4, textAlign: "center" }}>
             {src && (
               <>
                 <Cropper
-                  id="cropper"
+                  ref={cropperRef}
                   src={src}
                   style={{ width: "100%", height: "auto" }} // Kích thước của cropper
                   aspectRatio={1} // Tỉ lệ cắt (1:1 là hình vuông)
-                  guides={false} // Hiển thị hướng dẫn lưới
+                  guides={true} // Hiển thị hướng dẫn lưới
                   scalable={true} // Cho phép kéo giãn
-                  cropBoxResizable={true} // Cho phép điều chỉnh kích thước hộp cắt
+                  movable={true}
+                  background={false}
+                  viewMode={2}
+                  responsive={true}
+                  zoomable={true}
+                  autoCropArea={1}
+                  dragMode="move"
+                  cropBoxResizable={false} // Cho phép điều chỉnh kích thước hộp cắt
                 />
-                <Button variant="outlined" onClick={onCrop} sx={{ mt: 2.5 }}>
-                  Cắt ảnh
-                </Button>
               </>
             )}
           </Box>
           <hr />
           <Box sx={{ p: 2, textAlign: "end" }}>
             <Button sx={{ mr: 1 }} onClick={handleClose}>
-              Huỷ
+              <Typography color="primary" sx={{ fontWeight: "bold" }}>
+                Hủy
+              </Typography>
             </Button>
-            <Button variant="contained">Hoàn tất</Button>
+            <LoadingButton
+              loading={uploading}
+              variant="contained"
+              onClick={onCrop}
+            >
+              Hoàn tất
+            </LoadingButton>
           </Box>
         </Box>
       </Modal>
@@ -136,28 +152,3 @@ function ChangeAvatar({ setAvatar }) {
 }
 
 export default ChangeAvatar;
-{
-  /* <Box display="flex" justifyContent="center" mt={4}>
-            <ImageButton onChange={handleFileChange} variant="contained">
-              Chỉnh sửa
-            </ImageButton>
-          </Box> */
-}
-{
-  /* <Box
-            sx={{
-              border: "1px solid #c4c4c4",
-              width: "400px",
-              height: "400px",
-            }}
-          >
-            <img
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              src={
-                file
-                  ? convertFile(file)
-                  : "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"
-              }
-            />
-          </Box> */
-}

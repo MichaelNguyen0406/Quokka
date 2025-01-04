@@ -26,7 +26,7 @@ function InputEmail({ error, value, handleChange, disabled }) {
               fontSize="small"
               style={{ verticalAlign: "middle", marginRight: "4px" }}
             />{" "}
-            Email không hợp lệ.
+            Tên hiển thị không thể bỏ trống.
           </span>
         ) : (
           ""

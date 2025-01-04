@@ -4,9 +4,20 @@ import Box from "@mui/material/Box";
 
 function SidebarRight() {
   return (
-    <Box sx={{ height: "100vh" }}>
+    <Box
+      sx={{
+        height: "100vh",
+        maxWidth: "100%",
+        p: 2,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "center",
+        bgcolor: "#eee",
+      }}
+    >
       <Box padding="1rem">
-        <Box
+        {/* <Box
           width="100%"
           borderRadius="28px"
           border="1px solid #eee"
@@ -31,7 +42,7 @@ function SidebarRight() {
               />
             }
           />
-        </Box>
+        </Box> */}
         {/* <Box
           sx={{
             background: "#eee",

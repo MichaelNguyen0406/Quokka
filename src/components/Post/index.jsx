@@ -61,7 +61,7 @@ function Post({ post }) {
           <Box>
             <Typography
               sx={{
-                fontSize: "15px",
+                fontSize: "16px",
                 color: "#555",
                 mb: 2,
                 textAlign: "start",

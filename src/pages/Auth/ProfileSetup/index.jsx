@@ -4,25 +4,41 @@ import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 // Import file
 import InputDisplayName from "../components/InputDisplayName";
 import ChangeAvatar from "./components/ChangeAvatar";
+import { useAuth } from "../../../contexts/authContext";
+import { updateCollectionFieldById } from "../../../firebase/service";
 
 // Import Lib
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function ProfileSetup() {
   document.title = "Hoàn tất hồ sơ - Quokka";
-
+  const navigate = useNavigate();
   const [nextAvatar, setNextAvatar] = useState(false);
 
   // State Avatar Handle
+
   const [avatar, setAvatar] = useState("");
 
   // State Displayname Handle
-  const [displayname, setDisplayname] = useState("");
+  const { userDetail } = useAuth();
+  const [errorName, setErrorName] = useState(false);
+  const [displayName, setDisplayName] = useState("");
+
+  useEffect(() => {
+    setDisplayName(userDetail?.displayName);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userDetail?.displayName]);
+
+  const handleChange = (e) => {
+    setDisplayName(e.target.value);
+    setErrorName(false);
+  };
 
   const handleNext = () => {
     setNextAvatar(true);
@@ -32,8 +48,33 @@ function ProfileSetup() {
     setNextAvatar(false);
   };
 
-  const handleSubmit = () => {
-    // ...
+  // Submit handle
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const handleSubmit = async () => {
+    if (displayName.length === 0) {
+      setErrorName(true);
+    } else {
+      setLoadingSubmit(true);
+      try {
+        await updateCollectionFieldById(
+          "users",
+          userDetail?.id,
+          "displayName",
+          displayName
+        );
+        await updateCollectionFieldById(
+          "users",
+          userDetail?.id,
+          "newUser",
+          false
+        );
+        navigate("/");
+      } catch (error) {
+        console.log("Error profile setup", error);
+      } finally {
+        setLoadingSubmit(false);
+      }
+    }
   };
 
   return (
@@ -65,7 +106,11 @@ function ProfileSetup() {
       </Typography>
 
       {nextAvatar ? (
-        <InputDisplayName />
+        <InputDisplayName
+          value={displayName}
+          handleChange={handleChange}
+          error={errorName}
+        />
       ) : (
         <Box
           sx={{
@@ -85,9 +130,13 @@ function ProfileSetup() {
 
       {nextAvatar ? (
         <>
-          <Button onClick={handleSubmit} variant="contained">
+          <LoadingButton
+            loading={loadingSubmit}
+            onClick={handleSubmit}
+            variant="contained"
+          >
             Hoàn tất
-          </Button>
+          </LoadingButton>
           <Typography
             color="primary"
             onClick={handleBack}

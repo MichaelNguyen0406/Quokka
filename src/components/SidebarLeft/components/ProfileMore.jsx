@@ -28,6 +28,7 @@ function ProfileMore() {
       <Box
         onClick={handleClick}
         sx={{
+          width: "100%",
           mb: "40px",
           p: ".5rem .3rem",
           display: "flex",

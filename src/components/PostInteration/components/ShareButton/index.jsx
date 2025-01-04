@@ -132,9 +132,11 @@ function ShareButton({ post = {} }) {
         <Box sx={style}>
           <Box sx={styleHeader}>
             <Typography variant="h6" fontWeight="bold">
-              Share
+              Chia sẻ
             </Typography>
-            <Box
+
+            <IconButton
+              onClick={handleClose}
               sx={{
                 position: "absolute",
                 right: "1rem",
@@ -142,15 +144,13 @@ function ShareButton({ post = {} }) {
                 borderRadius: "50%",
               }}
             >
-              <IconButton onClick={handleClose}>
-                <CloseIcon />
-              </IconButton>
-            </Box>
+              <CloseIcon />
+            </IconButton>
           </Box>
           <hr />
           <Box sx={styleBody}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Avatar />
+              <Avatar src={userDetail?.photoURL} />
               <Typography
                 sx={{ fontSize: "16px", fontWeight: "bold", color: "#121213" }}
               >

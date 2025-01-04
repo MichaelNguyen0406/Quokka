@@ -4,9 +4,7 @@ import Input from "@mui/material/Input";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Button from "@mui/material/Button";
-import Hidden from "@mui/material/Hidden";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 
 // Import React
 import { useState } from "react";
@@ -24,9 +22,10 @@ import ImageButton from "../../ImageButton";
 import ImagePreview from "../../ImagePreview";
 import Avatar from "@mui/material/Avatar";
 import { arrayUnion } from "firebase/firestore";
+import { Typography } from "@mui/material";
 
 const style = {
-  borderRadius: "20px",
+  borderRadius: "5px",
   position: "absolute",
   top: "50%",
   left: "50%",
@@ -34,20 +33,10 @@ const style = {
   width: 700,
   bgcolor: "background.paper",
   boxShadow: 24,
-  p: "1rem",
 };
 
-function PostModals() {
-  // Open Modal
-  const [openModal, setOpenModal] = useState(false);
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
+// eslint-disable-next-line react/prop-types
+function PostModals({ setOpenModal, openModal }) {
   // Auth
   const { userDetail } = useAuth();
 
@@ -83,25 +72,29 @@ function PostModals() {
     }
     setUploadPost(true);
     try {
-      const urls = await uploadImages(images);
-      if (urls.length) {
-        const dataPost = {
-          user_id: userDetail.id,
-          caption: valueInput,
+      let dataPost = {
+        user_id: userDetail.id,
+        caption: valueInput,
+        imageURL: [],
+        listComment: [],
+        commentCount: 0,
+        likeCount: 0,
+        shareCount: 0,
+      };
+      if (images?.length) {
+        const urls = await uploadImages(images);
+        dataPost = {
+          ...dataPost,
           imageURL: [...urls],
-          listComment: [],
-          commentCount: 0,
-          likeCount: 0,
-          shareCount: 0,
         };
-        const post = await addDocument("posts", dataPost);
-        await updateCollectionFieldById(
-          "users",
-          userDetail.id,
-          "listPost",
-          arrayUnion(post.id)
-        );
       }
+      const post = await addDocument("posts", dataPost);
+      await updateCollectionFieldById(
+        "users",
+        userDetail.id,
+        "listPost",
+        arrayUnion(post.id)
+      );
     } catch (error) {
       console.error("Error uploading images:", error);
     } finally {
@@ -114,48 +107,39 @@ function PostModals() {
 
   return (
     <>
-      <Box onClick={handleOpenModal} minWidth="100%">
-        <Hidden lgDown>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{
-              borderRadius: "28px",
-              padding: "10px",
-              textTransform: "capitalize",
-            }}
-          >
-            Post
-          </Button>
-        </Hidden>
-        <Hidden lgUp>
-          <IconButton
-            variant="contained"
-            color="primary"
-            style={{
-              borderRadius: "28px",
-              textAlign: "center",
-              p: 0,
-            }}
-          >
-            <AddCircleOutlineIcon sx={{ width: "1.5em", height: "1.5em" }} />
-          </IconButton>
-        </Hidden>
-      </Box>
       <Modal
         open={openModal}
-        onClose={handleCloseModal}
+        onClose={() => setOpenModal(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Box sx={{ m: "-0.5rem 0 0.5rem -0.5rem" }}>
-            <IconButton onClick={handleCloseModal}>
+          <Box
+            sx={{
+              position: "relative",
+              height: "60px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold">
+              Tạo bài viết
+            </Typography>
+            <IconButton
+              onClick={() => setOpenModal(false)}
+              sx={{
+                position: "absolute",
+                right: "1rem",
+                bgcolor: "#e2e5e9",
+                borderRadius: "50%",
+              }}
+            >
               <CloseIcon />
             </IconButton>
           </Box>
-          <Box display="flex" gap="1rem" borderBottom="1px solid #eee">
+          <hr />
+          <Box display="flex" gap="1rem" borderBottom="1px solid #eee" p={2}>
             <Box>
               <Avatar src={userDetail?.photoURL} />
             </Box>
@@ -175,13 +159,18 @@ function PostModals() {
             </Box>
           </Box>
           <Box
-            pt="1rem"
+            p="1rem"
             display="flex"
             alignItems="center"
             justifyContent="space-between"
           >
             <Box display="flex">
-              <ImageButton onChange={handleImageChange} />
+              <ImageButton
+                onChange={handleImageChange}
+                sx={{ color: "inherit", minWidth: 0 }}
+              >
+                <InsertPhotoIcon />
+              </ImageButton>
               <EmojiButton
                 getEmoji={getEmoji}
                 transformOrigin={{ vertical: "bottom", horizontal: "center" }}

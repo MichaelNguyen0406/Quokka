@@ -35,7 +35,7 @@ export const deleteDocumentById = async (collectionName, documentId) => {
   return deleteDoc(doc(db, collectionName, documentId));
 };
 
-export const getDocumentById = (collectionName, documentId, callback) => {
+export const getDocumentById = async (collectionName, documentId, callback) => {
   const docRef = doc(db, collectionName, documentId);
   onSnapshot(docRef, (docSnapshot) => {
     if (docSnapshot.exists()) {
